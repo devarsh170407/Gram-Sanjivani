@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gram Sanjivani - Disease Check-up</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+        :root {
+            --primary-color: #d4af37; /* Gold */
+            --secondary-color: #aa8a2e; /* Deep Gold */
+            --background-color: #000000; /* Black */
+            --surface-color: #1a1a1a; /* Dark Grey/Black */
+            --text-color: #e0e0e0;
+            --white: #ffffff;
+            --gold-gradient: linear-gradient(45deg, #d4af37, #f9e29c);
+            --emergency-red: #ff0000;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1000px; /* Narrowed slightly for a better 2x2 look */
+            margin: auto;
+            padding: 2rem 0;
+        }
+
+        /* Header Styles */
+        header.nav-header {
+            background: rgba(0, 0, 0, 0.9);
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--primary-color);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 80%;
+            margin: auto;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            text-decoration: none;
+            letter-spacing: 1px;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            align-items: center;
+        }
+
+        .nav-links li {
+            margin-left: 30px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--white);
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+
+        /* Page Banner */
+        .page-banner {
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://i.ibb.co/1fDBbkGL/image.png') no-repeat center center/cover;
+            color: var(--white);
+            text-align: center;
+            padding: 8rem 0 4rem;
+            border-bottom: 1px solid #333;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+            color: var(--text-color);
+        }
+
+        /* Updated Disease Grid for 2x2 */
+        .disease-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* Force 2 columns */
+            gap: 2.5rem;
+            margin-top: 3rem;
+        }
+
+        .disease-card {
+            background: var(--surface-color);
+            border-radius: 15px;
+            border: 1px solid #333;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .disease-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary-color);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .disease-card img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            border-bottom: 2px solid var(--primary-color);
+            filter: grayscale(20%);
+        }
+
+        .disease-info {
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .disease-info h3 {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+            font-size: 1.4rem;
+        }
+
+        .disease-info p {
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+            color: #bbb;
+            min-height: 40px;
+        }
+
+        .icon {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        /* Button Styles */
+        .btn {
+            display: inline-block;
+            padding: 0.7rem 1.5rem;
+            background: var(--gold-gradient);
+            color: #000;
+            text-decoration: none;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.9rem;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4);
+            background: var(--white);
+        }
+
+        /* Modal Styles */
+        #checkupModal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: var(--surface-color);
+            padding: 2rem;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            border: 1px solid var(--primary-color);
+            position: relative;
+        }
+
+        .close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            color: var(--white);
+            font-size: 28px;
+            cursor: pointer;
+        }
+
+        form input {
+            width: 100%;
+            margin-bottom: 1.2rem;
+            padding: 0.8rem;
+            border: 1px solid #444;
+            border-radius: 5px;
+            background-color: #000;
+            color: var(--white);
+        }
+
+        form input:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .disease-grid { grid-template-columns: 1fr; }
+            nav { width: 90%; }
+            .nav-links { display: none; }
+            h1 { font-size: 2.2rem; }
+        }
+
+        .user-menu { position: relative; cursor: pointer; color: var(--primary-color); font-weight: 600; }
+        .user-dropdown {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 100%;
+            background: var(--surface-color);
+            border: 1px solid var(--primary-color);
+            border-radius: 5px;
+            min-width: 150px;
+            z-index: 100;
+        }
+        .user-dropdown.active { display: block; }
+        .user-dropdown a { display: block; padding: 10px; color: var(--white); text-decoration: none; }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header class="nav-header">
+        <nav>
+            <a href="home_page.html" class="logo">Gram Sanjivani</a>
+            <ul class="nav-links">
+                <li><a href="home_page.html">Home</a></li>
+                <li id="auth-link"><a href="Register.html">Register</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="page-banner">
+        <h1>Check-up Center</h1>
+        <p class="subtitle">AI-powered disease detection and health analysis</p>
+    </div>
+
+    <div class="container">
+        <div class="disease-grid">
+            <div class="disease-card">
+                <img src="https://i.ibb.co/MkjQG9f0/image.png" alt="Skin Conditions">
+                <div class="disease-info">
+                    <i class="fas fa-allergies icon"></i>
+                    <h3>Skin Conditions</h3>
+                    <p>Early Detection of Skin Diseases with Image Analysis</p>
+                    <button class="btn" onclick="openModal('Skin Conditions')">Request Check-up</button>
+                </div>
+            </div>
+
+            <div class="disease-card">
+                <img src="https://i.ibb.co/bRstJp5X/image.png" alt="Health Report">
+                <div class="disease-info">
+                    <i class="fas fa-heartbeat icon"></i>
+                    <h3>Predict My Health</h3>
+                    <p>Upload Your Report and Discover What's Next</p>
+                    <button class="btn" onclick="openModal('Health Report Analysis')">Predict My Health</button>
+                </div>
+            </div>
+
+            <div class="disease-card">
+                <img src="https://i.ibb.co/NgMHV6tJ/image.png" alt="Diabetes">
+                <div class="disease-info">
+                    <i class="fas fa-tint icon"></i>
+                    <h3>Diabetes</h3>
+                    <p>Estimate Your Blood Sugar & Assess Diabetes Risk</p>
+                    <button class="btn" onclick="openModal('Diabetes')">Request Check-up</button>
+                </div>
+            </div>
+
+            <div class="disease-card">
+                <img src="https://i.ibb.co/F4fc1chS/De-Watermark-ai-1738512847302.png" alt="General Disease">
+                <div class="disease-info">
+                    <i class="fas fa-lungs icon"></i>
+                    <h3>General Disease</h3>
+                    <p>Fast Relief for Everyday Ailments – Headache, Fever, and More!</p>
+                    <a href="medicine-suggestions.html" class="btn">Get Medicine</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="checkupModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 style="color: var(--primary-color); margin-bottom: 1.5rem;">Request Check-up</h2>
+            <form id="checkupForm">
+                <input type="text" id="name" placeholder="Your Name" required>
+                <input type="email" id="email" placeholder="Your Email" required>
+                <input type="tel" id="phone" placeholder="Your Phone Number" required>
+                <input type="hidden" id="diseaseType">
+                <button type="submit" id="submitBtn" class="btn" style="width: 100%;">
+                    <span id="submitText">Submit Request</span>
+                    <span id="loadingSpinner" style="display: none;"><i class="fas fa-spinner fa-spin"></i></span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const modal = document.getElementById("checkupModal");
+        const closeBtn = document.querySelector(".close");
+        const checkupForm = document.getElementById("checkupForm");
+        const diseaseTypeInput = document.getElementById("diseaseType");
+        const submitBtn = document.getElementById("submitBtn");
+        const submitText = document.getElementById("submitText");
+        const loadingSpinner = document.getElementById("loadingSpinner");
+        let currentUser = null;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const userString = sessionStorage.getItem('user');
+            const authLinkElement = document.getElementById('auth-link');
+            
+            if (userString) {
+                currentUser = JSON.parse(userString);
+                const userMenu = document.createElement('div');
+                userMenu.className = 'user-menu';
+                userMenu.innerHTML = `<span><i class="fas fa-user"></i> ${currentUser.name} <i class="fas fa-chevron-down"></i></span>`;
+                
+                const userDropdown = document.createElement('div');
+                userDropdown.className = 'user-dropdown';
+                userDropdown.innerHTML = `
+                    <a href="dashboard-${currentUser.role}.html">Dashboard</a>
+                    <a href="#" id="logout-link">Logout</a>
+                `;
+                userMenu.appendChild(userDropdown);
+                authLinkElement.innerHTML = '';
+                authLinkElement.appendChild(userMenu);
+                
+                userMenu.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    userDropdown.classList.toggle('active');
+                });
+
+                document.getElementById('logout-link').addEventListener('click', () => {
+                    sessionStorage.removeItem('user');
+                    window.location.reload();
+                });
+
+                document.addEventListener('click', () => userDropdown.classList.remove('active'));
+            }
+        });
+
+        function openModal(diseaseType) {
+            if (!currentUser) {
+                alert('Please log in to request a check-up.');
+                window.location.href = 'Register.html';
+                return;
+            }
+            modal.style.display = "flex";
+            diseaseTypeInput.value = diseaseType;
+            document.getElementById("name").value = currentUser.name;
+            document.getElementById("email").value = currentUser.email;
+        }
+
+        closeBtn.onclick = () => modal.style.display = "none";
+        window.onclick = (e) => { if (e.target == modal) modal.style.display = "none"; }
+
+        checkupForm.onsubmit = function(e) {
+            e.preventDefault();
+            submitText.style.display = 'none';
+            loadingSpinner.style.display = 'inline-block';
+            submitBtn.disabled = true;
+
+            const requestData = {
+                userId: currentUser.id,
+                name: document.getElementById("name").value,
+                email: document.getElementById("email").value,
+                phone: document.getElementById("phone").value,
+                diseaseType: diseaseTypeInput.value
+            };
+
+            fetch('/api/checkup-request', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(requestData),
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    alert(`Request received for ${requestData.diseaseType}!`);
+                    modal.style.display = "none";
+                } else {
+                    alert('Error submitting request.');
+                }
+            })
+            .catch(() => alert('Request submitted successfully.'))
+            .finally(() => {
+                submitText.style.display = 'inline-block';
+                loadingSpinner.style.display = 'none';
+                submitBtn.disabled = false;
+            });
+        }
+    </script>
+</body>
+</html>

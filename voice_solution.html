@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gram Sanjivani - Voice Solution</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+        :root {
+            --primary-color: #d4af37; 
+            --background-color: #000000; 
+            --surface-color: #1a1a1a; 
+            --text-color: #e0e0e0;
+            --gold-gradient: linear-gradient(45deg, #d4af37, #f9e29c);
+        }
+
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: rgba(0, 0, 0, 0.9);
+            padding: 1rem 2rem;
+            border-bottom: 1px solid var(--primary-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .content-area {
+            flex: 1;
+            padding: 2rem;
+            max-width: 1000px;
+            margin: auto;
+            width: 100%;
+        }
+
+        .action-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .action-btn {
+            background: var(--surface-color);
+            border: 1px solid #333;
+            color: var(--white);
+            padding: 2rem 1rem;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.1rem;
+        }
+
+        .action-btn i {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+        }
+
+        .action-btn:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.2);
+        }
+
+        .primary-gold-btn {
+            background: var(--gold-gradient);
+            color: black;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .hidden { display: none; }
+
+        .profile-card {
+            background: var(--surface-color);
+            border: 1px solid var(--primary-color);
+            padding: 2rem;
+            border-radius: 15px;
+            margin-top: 2rem;
+        }
+
+        video {
+            width: 100%;
+            border-radius: 15px;
+            border: 2px solid var(--primary-color);
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="home_page.html" class="logo">Gram Sanjivani</a>
+        <div class="nav-links">
+            <button id="request-perms" class="primary-gold-btn">Enable Sensors</button>
+        </div>
+    </nav>
+
+    <div id="main-content" class="content-area">
+        <h2 style="color: var(--primary-color); text-align: center;">Smart Health Assistant</h2>
+        
+        <div class="action-grid">
+            <button id="btn-camera" class="action-btn">
+                <i class="fas fa-camera"></i>
+                <span>Open Camera</span>
+            </button>
+            <button id="btn-upload" class="action-btn">
+                <i class="fas fa-file-upload"></i>
+                <span>Upload Image</span>
+            </button>
+            <button id="btn-voice" class="action-btn" style="border: 2px solid var(--primary-color);">
+                <i class="fas fa-microphone"></i>
+                <span>Voice Chat</span>
+            </button>
+        </div>
+
+        <input type="file" id="file-input" hidden accept="image/*">
+        
+        <div id="camera-section" class="hidden">
+            <video id="camera-preview" autoplay playsinline></video>
+            <button id="btn-capture" class="primary-gold-btn" style="margin-top: 10px; width: 100%;">Capture & Analyze</button>
+            <canvas id="photo-canvas" class="hidden"></canvas>
+        </div>
+
+        <div id="analysis-result" class="profile-card hidden">
+            <h3 id="res-issue" style="color: var(--primary-color);"></h3>
+            <p id="res-remedy"></p>
+            <p id="res-ointment"></p>
+            <p id="res-warning" style="color: #ff4444; font-weight: bold;"></p>
+        </div>
+    </div>
+
+    <script type="module" src="app.js"></script>
+</body>
+</html>

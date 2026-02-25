@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gram Sanjivani - Your Health, Our Priority</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+        :root {
+            --primary-color: #d4af37; /* Gold */
+            --secondary-color: #aa8a2e; /* Deep Gold */
+            --background-color: #000000; /* Black */
+            --surface-color: #1a1a1a; /* Dark Grey/Black */
+            --text-color: #e0e0e0;
+            --white: #ffffff;
+            --gold-gradient: linear-gradient(45deg, #d4af37, #f9e29c);
+            --emergency-red: #ff0000;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 80%;
+            margin: auto;
+            overflow: hidden;
+        }
+
+        /* Header Styles */
+        header {
+            background: rgba(0, 0, 0, 0.9);
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--primary-color);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        header.scrolled {
+            background: rgba(0, 0, 0, 1);
+            padding: 0.5rem 0;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            letter-spacing: 1px;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+            text-shadow: 0 0 10px var(--primary-color);
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            align-items: center;
+        }
+
+        .nav-links li {
+            margin-left: 30px;
+        }
+
+        .nav-links a, .lang-btn {
+            text-decoration: none;
+            color: var(--white);
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+            position: relative;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .lang-btn {
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+            padding: 5px 15px;
+            border-radius: 20px;
+        }
+
+        .lang-btn:hover {
+            background: var(--primary-color);
+            color: #000;
+        }
+
+        /* Hero Section Styles */
+        .hero {
+            background: url('https://i.ibb.co/1fDBbkGL/image.png') no-repeat center center/cover;
+            height: 100vh;
+            position: relative;
+            color: var(--white);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 20px;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.6));
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+        }
+
+        .hero p {
+            font-size: 1.4rem;
+            margin-bottom: 2rem;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: var(--gold-gradient);
+            color: #000;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.5);
+            background: var(--white);
+        }
+
+        .emergency-btn {
+            background: var(--emergency-red);
+            color: #fff;
+            font-weight: bold;
+            font-size: 1.2rem;
+            padding: 15px 40px;
+            margin-top: 20px;
+            animation: pulse 2s infinite;
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.4);
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* Main Content Styles */
+        main {
+            padding: 6rem 0;
+        }
+
+        .section {
+            padding: 4rem 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            color: var(--primary-color);
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 100px;
+            height: 3px;
+            background: var(--primary-color);
+            margin: 10px auto;
+        }
+
+        .about-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            background: var(--surface-color);
+            padding: 2rem;
+            border-radius: 15px;
+            border: 1px solid #333;
+        }
+
+        .about-text {
+            flex: 1;
+            min-width: 300px;
+            padding: 1rem;
+        }
+
+        .about-image {
+            flex: 1;
+            min-width: 300px;
+            padding: 1rem;
+        }
+
+        .about-image img {
+            width: 100%;
+            border-radius: 10px;
+            filter: grayscale(30%);
+            border: 2px solid var(--primary-color);
+            transition: all 0.3s ease;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        /* Shared Link Style for Feature Cards */
+        .feature-link {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .feature-card {
+            background: var(--surface-color);
+            border: 1px solid #333;
+            border-radius: 10px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            height: 100%;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary-color);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+        }
+
+        .feature-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        /* Footer Styles */
+        footer {
+            background: #0a0a0a;
+            color: var(--white);
+            padding: 3rem 0;
+            border-top: 1px solid var(--primary-color);
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        .contact-form input,
+        .contact-form textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 1rem;
+            border: 1px solid #444;
+            border-radius: 5px;
+            background-color: #1a1a1a;
+            color: var(--white);
+        }
+
+        .contact-form input:focus, .contact-form textarea:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+
+        .contact-info i {
+            color: var(--primary-color);
+            margin-right: 10px;
+        }
+
+        /* Emergency Pop-up Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.9);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: var(--surface-color);
+            border: 2px solid var(--emergency-red);
+            border-radius: 15px;
+            padding: 2rem;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 0 30px rgba(255, 0, 0, 0.4);
+            position: relative;
+            animation: modalFade 0.3s ease;
+        }
+
+        @keyframes modalFade {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            color: var(--white);
+            font-size: 1.8rem;
+            cursor: pointer;
+        }
+
+        .emergency-list {
+            margin-top: 1.5rem;
+            text-align: left;
+        }
+
+        .emergency-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.05);
+            margin-bottom: 12px;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid var(--emergency-red);
+        }
+
+        .emergency-label {
+            font-weight: 600;
+            font-size: 1rem;
+            color: var(--white);
+        }
+
+        .emergency-number {
+            color: var(--emergency-red);
+            font-weight: 700;
+            font-size: 1.2rem;
+            text-decoration: none;
+            background: #fff;
+            padding: 2px 10px;
+            border-radius: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .container { width: 90%; }
+            .nav-links { display: none; }
+            .hero h1 { font-size: 2.5rem; }
+            .section-title { font-size: 2rem; }
+            .about-content { flex-direction: column; }
+        }
+        
+.hero-btn-container {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 20px;
+    position: relative;
+    z-index: 2;
+}
+.hero-secondary-btn {
+    background: transparent;
+    border: 2px solid var(--primary-color);
+    color: var(--primary-color);
+}
+.hero-secondary-btn:hover {
+    background: var(--primary-color);
+    color: #000;
+}
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <a href="#" class="logo">Gram Sanjivani</a>
+            <ul class="nav-links">
+                <li><a href="#home" data-en="Home" data-hi="मुख्य पृष्ठ">Home</a></li>
+                <li><a href="#about" data-en="About" data-hi="हमारे बारे में">About</a></li>
+                <li><a href="#features" data-en="Features" data-hi="विशेषताएं">Features</a></li>
+                <li><a href="Register.html" data-en="Register" data-hi="पंजीकरण">Register</a></li>
+                <li><a href="#contact" data-en="Contact" data-hi="संपर्क">Contact</a></li>
+                <li><button id="langToggle" class="lang-btn">हिंदी</button></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <h1 data-en="Welcome to Gram Sanjivani" data-hi="ग्राम संजीवनी में आपका स्वागत है">Welcome to Gram Sanjivani</h1>
+            <p data-en="Blending advanced technology with a personal, caring touch." data-hi="उन्नत तकनीक को व्यक्तिगत और देखभाल भरे स्पर्श के साथ मिलाना।">Blending advanced technology with a personal, caring touch.</p>
+            <button class="btn emergency-btn" id="emergencyTrigger" data-en="Emergency" data-hi="आपातकालीन">Emergency</button>
+        </div>
+    </section>
+
+    <div id="emergencyModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" id="closeModal">&times;</span>
+            <h2 style="color: var(--emergency-red);" data-en="Emergency Services" data-hi="आपातकालीन सेवाएं">Emergency Services</h2>
+            <div class="emergency-list">
+                <div class="emergency-item">
+                    <span class="emergency-label" data-en="Ambulance" data-hi="एम्बुलेंस">Ambulance</span>
+                    <a href="tel:102" class="emergency-number">102</a>
+                </div>
+                <div class="emergency-item">
+                    <span class="emergency-label" data-en="Woman Helpline" data-hi="महिला हेल्पलाइन">Woman Helpline</span>
+                    <a href="tel:1091" class="emergency-number">1091</a>
+                </div>
+                <div class="emergency-item">
+                    <span class="emergency-label" data-en="Child Helpline" data-hi="चाइल्ड हेल्पलाइन">Child Helpline</span>
+                    <a href="tel:1098" class="emergency-number">1098</a>
+                </div>
+                <div class="emergency-item">
+                    <span class="emergency-label" data-en="Fire & Rescue" data-hi="दमकल केंद्र">Fire & Rescue</span>
+                    <a href="tel:101" class="emergency-number">101</a>
+                </div>
+                <div class="emergency-item">
+                    <span class="emergency-label" data-en="Police" data-hi="पुलिस">Police</span>
+                    <a href="tel:100" class="emergency-number">100</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <main>
+        <section id="about" class="section">
+            <div class="container">
+                <h2 class="section-title" data-en="About Us" data-hi="हमारे बारे में">About Us</h2>
+                <div class="about-content">
+                    <div class="about-text">
+                        <p align="justify" data-en="At Gram Sanjivani, we are redefining healthcare with AI-driven medical assistance, making diagnosis and emergency response faster and more efficient. Our platform provides instant health assessments, real-time emergency support and home remedies, ensuring that users receive timely medical care when they need it most." 
+                           data-hi="ग्राम संजीवनी में, हम एआई-संचालित चिकित्सा सहायता के साथ स्वास्थ्य सेवा को फिर से परिभाषित कर रहे हैं, जिससे निदान और आपातकालीन प्रतिक्रिया तेज और अधिक कुशल हो गई है। हमारा प्लेटफ़ॉर्म त्वरित स्वास्थ्य मूल्यांकन, वास्तविक समय में आपातकालीन सहायता और घरेलू उपचार प्रदान करता है, यह सुनिश्चित करता है कि उपयोगकर्ताओं को सबसे अधिक आवश्यकता होने पर समय पर चिकित्सा देखभाल मिले।"> 
+                           At Gram Sanjivani, we are redefining healthcare with AI-driven medical assistance, making diagnosis and emergency response faster and more efficient. Our platform provides instant health assessments, real-time emergency support and home remedies, ensuring that users receive timely medical care when they need it most.
+                        </p>
+                        <br>
+                        <p align="justify" data-en="With our AI-powered Prescription Assistance, users can simply enter their symptoms, and the system will analyze them to generate a preliminary diagnosis and prescription. This is then reviewed and validated by a specialist doctor, ensuring accuracy and reliability."
+                           data-hi="हमारी एआई-संचालित प्रिस्क्रिप्शन सहायता के साथ, उपयोगकर्ता बस अपने लक्षण दर्ज कर सकते हैं, और सिस्टम प्रारंभिक निदान और प्रिस्क्रिप्शन उत्पन्न करने के लिए उनका विश्लेषण करेगा। इसके बाद एक विशेषज्ञ डॉक्टर द्वारा इसकी समीक्षा और सत्यापन किया जाता, जिससे सटीकता और विश्वसनीयता सुनिश्चित होती है।">
+                           With our AI-powered Prescription Assistance, users can simply enter their symptoms, and the system will analyze them to generate a preliminary diagnosis and prescription. This is then reviewed and validated by a specialist doctor, ensuring accuracy and reliability.
+                        </p>
+                    </div>
+                    <div class="about-image">
+                        <img src="https://i.ibb.co/Y7n9zfMb/image.png" alt="Healthcare professionals">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="features" class="section">
+            <div class="container">
+                <h2 class="section-title" data-en="What Our Software Does" data-hi="हमारा सॉफ्टवेयर क्या करता है">What Our Software Does</h2>
+                <div class="features">
+                    <div class="feature-card">
+                        <i class="fas fa-user-md feature-icon"></i>
+                        <h3 data-en="Patient Management in Multilanguage" data-hi="बहुभाषी रोगी प्रबंधन">Patient Management in Multilanguage</h3>
+                        <p data-en="Efficiently manage patient records, appointments, and treatment plans all in one place." data-hi="रोगी के रिकॉर्ड, नियुक्तियों और उपचार योजनाओं को एक ही स्थान पर कुशलतापूर्वक प्रबंधित करें।">Efficiently manage patient records, appointments, and treatment plans all in one place.</p>
+                    </div>
+                    
+                    <a href="voice_solution.html" class="feature-link">
+                        <div class="feature-card">
+                            <i class="fas fa-video feature-icon"></i>
+                            <h3 data-en="Voice to Voice Solution" data-hi="वॉयस टू वॉयस समाधान">Voice to Voice Solution</h3>
+                            <p data-en="By our AI-powered voice chat, will give solution for each pain" data-hi="हमारी एआई-संचालित वॉयस चैट द्वारा, हर दर्द का समाधान दिया जाएगा">By our AI-powered voice chat, will give solution for each pain</p>
+                        </div>
+                    </a>
+
+                    <div class="feature-card">
+                        <i class="fas fa-pills feature-icon"></i>
+                        <h3 data-en="Prescription Management and Home-Remedies" data-hi="प्रिस्क्रिप्शन प्रबंधन और घरेलू उपचार">Prescription Management and Home-Remedies</h3>
+                        <p data-en="Easily prescribe, track, and suggest Home-Remedies and ayurvedic solution" data-hi="आसानी से घरेलू उपचार और आयुर्वेदिक समाधान का सुझाव दें और ट्रैक करें">Easily prescribe, track, and suggest Home-Remedies and ayurvedic solution</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-chart-line feature-icon"></i>
+                        <h3 data-en="Health Analytics" data-hi="स्वास्थ्य विश्लेषण">Health Analytics</h3>
+                        <p data-en="Gain valuable insights into patient health trends and treatment outcomes with advanced analytics." data-hi="उन्नत विश्लेषण के साथ रोगी स्वास्थ्य प्रवृत्तियों और उपचार परिणामों में मूल्यवान अंतर्दृष्टि प्राप्त करें।">Gain valuable insights into patient health trends and treatment outcomes with advanced analytics.</p>
+                    </div>
+
+                    <a href="check_up.html" class="feature-link">
+                        <div class="feature-card">
+                            <i class="fas fa-calendar-check feature-icon"></i>
+                            <h3 data-en="Check-up" data-hi="जाँच">Check-up</h3>
+                            <p data-en="Easily schedule and manage regular check-ups and follow-up appointments for patients." data-hi="रोगियों के लिए नियमित जांच और अनुवर्ती नियुक्तियों को आसानी से शेड्यूल और प्रबंधित करें।">Easily schedule and manage regular check-ups and follow-up appointments for patients.</p>
+                        </div>
+                    </a>
+
+                    <div class="feature-card">
+                        <i class="fas fa-ambulance feature-icon"></i>
+                        <h3 data-en="Emergency Services" data-hi="आपातकालीन सेवाएं">Emergency Services</h3>
+                        <p data-en="Quick access to emergency services and real-time ambulance tracking for critical situations." data-hi="आपातकालीन सेवाओं तक त्वरित पहुंच और महत्वपूर्ण स्थितियों के लिए वास्तविक समय में एम्बुलेंस ट्रैकिंग।">Quick access to emergency services and real-time ambulance tracking for critical situations.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer id="contact">
+        <div class="container footer-content">
+            <div class="contact-form">
+                <h3 data-en="Contact Us" data-hi="संपर्क करें">Contact Us</h3>
+                <form>
+                    <input type="text" placeholder="Your Name" required>
+                    <textarea placeholder="Your Message" required></textarea>
+                    <button type="submit" class="btn" data-en="Send Message" data-hi="संदेश भेजें">Send Message</button>
+                </form>
+            </div>
+            <div class="contact-info">
+                <h3 data-en="Get in Touch" data-hi="संपर्क में रहें">Get in Touch</h3>
+                <p><i class="fas fa-map-marker-alt"></i> <span data-en="Rajkot, Gujarat" data-hi="राजकोट, गुजरात">Rajkot, Gujarat</span></p>
+                <p><i class="fas fa-phone"></i> +91 9999999999</p>
+                <p><i class="fas fa-envelope"></i> info@medicare.com</p>
+            </div>
+        </div>
+    </footer>
+
+   <script>
+    // 1. Language Toggle Logic
+    const langToggle = document.getElementById('langToggle');
+    let currentLang = 'en';
+
+    langToggle.addEventListener('click', () => {
+        currentLang = currentLang === 'en' ? 'hi' : 'en';
+        langToggle.innerText = currentLang === 'en' ? 'हिंदी' : 'English';
+        
+        document.querySelectorAll('[data-en]').forEach(el => {
+            el.innerText = el.getAttribute(`data-${currentLang}`);
+        });
+
+        document.querySelectorAll('input, textarea').forEach(el => {
+            if(el.placeholder === "Your Name" || el.placeholder === "आपका नाम") 
+                el.placeholder = currentLang === 'en' ? "Your Name" : "आपका नाम";
+            if(el.placeholder === "Your Message" || el.placeholder === "आपका संदेश") 
+                el.placeholder = currentLang === 'en' ? "Your Message" : "आपका संदेश";
+        });
+    });
+
+    // 2. Emergency Pop-up Logic
+    const modal = document.getElementById("emergencyModal");
+    const btn = document.getElementById("emergencyTrigger");
+    const span = document.getElementById("closeModal");
+
+    btn.onclick = function() { modal.style.display = "flex"; }
+    span.onclick = function() { modal.style.display = "none"; }
+    window.onclick = function(event) {
+        if (event.target == modal) { modal.style.display = "none"; }
+    }
+
+    // 3. Login Persistence & Dynamic Button Injection
+    document.addEventListener('DOMContentLoaded', function() {
+        const userString = sessionStorage.getItem('user');
+        const heroContent = document.querySelector('.hero-content');
+        const emergencyBtn = document.getElementById('emergencyTrigger');
+
+        if (userString) {
+            const user = JSON.parse(userString);
+            
+            // Create a container for buttons
+            const btnContainer = document.createElement('div');
+            btnContainer.className = 'hero-btn-container';
+
+            // Voice to Voice Button
+            const voiceBtn = document.createElement('a');
+            voiceBtn.href = 'voice_solution.html';
+            voiceBtn.className = 'btn hero-secondary-btn';
+            voiceBtn.innerHTML = '<i class="fas fa-microphone"></i> Voice Solution';
+            voiceBtn.setAttribute('data-en', 'Voice Solution');
+            voiceBtn.setAttribute('data-hi', 'आवाज समाधान');
+
+            // Check-up Button
+            const checkBtn = document.createElement('a');
+            checkBtn.href = 'check_up.html';
+            checkBtn.className = 'btn hero-secondary-btn';
+            checkBtn.innerHTML = '<i class="fas fa-heartbeat"></i> Check-up';
+            checkBtn.setAttribute('data-en', 'Check-up');
+            checkBtn.setAttribute('data-hi', 'जाँच केंद्र');
+
+            // Add buttons to container
+            btnContainer.appendChild(voiceBtn);
+            btnContainer.appendChild(checkBtn);
+
+            // Insert container after the Emergency button
+            heroContent.appendChild(btnContainer);
+
+            // Update Navbar Register link to Dashboard/Logout
+            const navLinks = document.querySelector('.nav-links');
+            const registerLi = Array.from(navLinks.children).find(li => li.innerHTML.includes('Register.html'));
+            if (registerLi) {
+                registerLi.innerHTML = `<a href="dashboard-${user.role}.html" style="color:var(--primary-color)">Dashboard</a>`;
+                
+                // Add Logout option
+                const logoutLi = document.createElement('li');
+                logoutLi.innerHTML = '<a href="#" id="logout-link">Logout</a>';
+                navLinks.insertBefore(logoutLi, navLinks.lastElementChild);
+                
+                document.getElementById('logout-link').onclick = function() {
+                    sessionStorage.removeItem('user');
+                    window.location.reload();
+                };
+            }
+        }
+    });
+</script>
+</body>
+</html>

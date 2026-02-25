@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gramin Sanjivani - Login & Signup</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+        :root {
+            --primary-color: #d4af37; /* Gold */
+            --secondary-color: #aa8a2e; /* Deep Gold */
+            --background-color: #000000; /* Black */
+            --surface-color: #1a1a1a; /* Dark Surface */
+            --text-color: #e0e0e0;
+            --white: #ffffff;
+            --error-color: #ff3333;
+            --success-color: #d4af37;
+            --gold-gradient: linear-gradient(45deg, #d4af37, #f9e29c);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            width: 80%;
+            margin: auto;
+            overflow: hidden;
+        }
+
+        /* Header Styles */
+        header {
+            background: rgba(0, 0, 0, 0.9);
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--primary-color);
+            width: 100%;
+            z-index: 1000;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            text-decoration: none;
+            letter-spacing: 1px;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            align-items: center;
+        }
+
+        .nav-links li {
+            margin-left: 30px;
+        }
+
+        .nav-links a, .lang-btn {
+            text-decoration: none;
+            color: var(--white);
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .lang-btn {
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+            padding: 5px 15px;
+            border-radius: 20px;
+        }
+
+        .lang-btn:hover {
+            background: var(--primary-color);
+            color: #000;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--primary-color);
+        }
+
+        /* Main Content Styles */
+        main {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem 0;
+        }
+
+        .auth-container {
+            width: 100%;
+            max-width: 900px;
+            margin: 2rem auto;
+            display: flex;
+            box-shadow: 0 10px 40px rgba(212, 175, 55, 0.1);
+            border-radius: 15px;
+            overflow: hidden;
+            background: var(--surface-color);
+            border: 1px solid #333;
+        }
+
+        .auth-image {
+            flex: 1;
+            background: url('https://i.ibb.co/1fDBbkGL/image.png') no-repeat center center/cover;
+            position: relative;
+            min-height: 500px;
+        }
+
+        .auth-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.6));
+        }
+
+        .auth-image-content {
+            position: relative;
+            z-index: 1;
+            color: var(--white);
+            padding: 2rem;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .auth-image-content h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+        }
+
+        .auth-form {
+            flex: 1;
+            padding: 3rem 2rem;
+            background: var(--surface-color);
+        }
+
+        .form-title {
+            text-align: center;
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #333;
+            border-radius: 8px;
+            font-size: 1rem;
+            background: #0a0a0a;
+            color: var(--white);
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 5px rgba(212, 175, 55, 0.3);
+            outline: none;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: var(--gold-gradient);
+            color: #000;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            width: 100%;
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(212, 175, 55, 0.4);
+        }
+
+        .form-footer {
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+
+        .form-footer a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .forgot-password {
+            text-align: right;
+            margin-bottom: 1rem;
+        }
+
+        .forgot-password a {
+            color: var(--primary-color);
+            font-size: 0.9rem;
+            text-decoration: none;
+        }
+
+        /* Footer Styles */
+        footer {
+            background: #0a0a0a;
+            color: var(--white);
+            padding: 1.5rem 0;
+            text-align: center;
+            border-top: 1px solid #333;
+        }
+
+        @media (max-width: 768px) {
+            .auth-container { flex-direction: column; max-width: 500px; }
+            .auth-image { min-height: 200px; }
+            .nav-links { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <a href="home_page.html" class="logo">Gramin Sanjivani</a>
+            <ul class="nav-links">
+                <li><a href="home_page.html" data-en="Home" data-hi="मुख्य पृष्ठ">Home</a></li>
+                <li><a href="home_page.html#about" data-en="About" data-hi="हमारे बारे में">About</a></li>
+                <li><a href="home_page.html#features" data-en="Features" data-hi="विशेषताएं">Features</a></li>
+                <li><a href="#" class="active" data-en="Login/Register" data-hi="लॉगिन/रजिस्टर">Login/Register</a></li>
+                <li><a href="home_page.html#contact" data-en="Contact" data-hi="संपर्क">Contact</a></li>
+                <li><button id="langToggle" class="lang-btn">हिंदी</button></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <div class="auth-container">
+            <div class="auth-image">
+                <div class="auth-image-content">
+                    <h2 data-en="Your Health, Our Priority" data-hi="आपका स्वास्थ्य, हमारी प्राथमिकता">Your Health, Our Priority</h2>
+                    <p data-en="Join MediCare today and experience healthcare like never before. Our platform connects you with the best services." 
+                       data-hi="आज ही मेडिकेयर से जुड़ें और स्वास्थ्य सेवा का ऐसा अनुभव करें जैसा पहले कभी नहीं हुआ। हमारा प्लेटफ़ॉर्म आपको सर्वोत्तम सेवाओं से जोड़ता है।">Join MediCare today and experience healthcare like never before. Our platform connects you with the best services.</p>
+                </div>
+            </div>
+            <div class="auth-form">
+                <div id="login-form">
+                    <h2 class="form-title" data-en="Login" data-hi="लॉगिन">Login</h2>
+                    <form id="loginForm">
+                        <div class="form-group">
+                            <label for="login-id" data-en="Email / Phone Number" data-hi="ईमेल / फोन नंबर">Email / Phone Number</label>
+                            <input type="text" id="login-id" class="form-control" placeholder="Enter email or phone" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="login-password" data-en="Password" data-hi="पासवर्ड">Password</label>
+                            <input type="password" id="login-password" class="form-control" placeholder="Enter password" required>
+                        </div>
+                        <div class="forgot-password">
+                            <a href="#" data-en="Forgot Password?" data-hi="पासवर्ड भूल गए?">Forgot Password?</a>
+                        </div>
+                        <button type="submit" class="btn" data-en="Login" data-hi="लॉगिन करें">Login</button>
+                    </form>
+                    <div class="form-footer">
+                        <p><span data-en="Don't have an account?" data-hi="खाता नहीं है?">Don't have an account?</span> <a href="#" id="show-signup" data-en="Sign Up" data-hi="साइन अप">Sign Up</a></p>
+                    </div>
+                </div>
+
+                <div id="signup-form" style="display: none;">
+                    <h2 class="form-title" data-en="Create Account" data-hi="खाता बनाएं">Create Account</h2>
+                    <form id="signupForm">
+                        <div class="form-group">
+                            <label for="fullname" data-en="Full Name" data-hi="पूरा नाम">Full Name</label>
+                            <input type="text" id="fullname" class="form-control" placeholder="Full Name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email-phone" data-en="Email / Phone Number" data-hi="ईमेल / फोन नंबर">Email / Phone Number</label>
+                            <input type="text" id="email-phone" class="form-control" placeholder="Email or Phone Number" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="password" data-en="Password" data-hi="पासवर्ड">Password</label>
+                            <input type="password" id="password" class="form-control" placeholder="Create password" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="confirm-password" data-en="Confirm Password" data-hi="पासवर्ड की पुष्टि करें">Confirm Password</label>
+                            <input type="password" id="confirm-password" class="form-control" placeholder="Confirm password" required>
+                        </div>
+                        <button type="submit" class="btn" data-en="Sign Up" data-hi="साइन अप करें">Sign Up</button>
+                    </form>
+                    <div class="form-footer">
+                        <p><span data-en="Already have an account?" data-hi="पहले से ही एक खाता है?">Already have an account?</span> <a href="#" id="show-login" data-en="Login" data-hi="लॉगिन">Login</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 MediCare. <span data-en="All rights reserved." data-hi="सर्वाधिकार सुरक्षित।">All rights reserved.</span></p>
+        </div>
+    </footer>
+
+  <script>
+    const loginForm = document.getElementById('login-form');
+    const signupForm = document.getElementById('signup-form');
+    const showSignupLink = document.getElementById('show-signup');
+    const showLoginLink = document.getElementById('show-login');
+    const loginFormEl = document.getElementById('loginForm');
+
+    // Toggle logic
+    showSignupLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        loginForm.style.display = 'none';
+        signupForm.style.display = 'block';
+    });
+
+    showLoginLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        signupForm.style.display = 'none';
+        loginForm.style.display = 'block';
+    });
+
+    // Handle Login Submission
+    loginFormEl.addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        // 1. Get the values (In a real app, you'd validate these with a server)
+        const userIdentifier = document.getElementById('login-id').value;
+        
+        // 2. Create a Mock User Object
+        const mockUser = {
+            name: userIdentifier.split('@')[0], // Use part of email as name
+            role: 'patient', // Default role
+            isLoggedIn: true
+        };
+
+        // 3. CRITICAL: Save to sessionStorage so home_page.html can see it
+        sessionStorage.setItem('user', JSON.stringify(mockUser));
+
+        // 4. Redirect to home page
+        alert("Login Successful!");
+        window.location.href = 'home_page.html';
+    });
+</script>
+</body>
+</html>
