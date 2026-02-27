@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,9 +10,9 @@
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
 
         :root {
-            --primary-color: #d4af37; 
-            --background-color: #000000; 
-            --surface-color: #1a1a1a; 
+            --primary-color: #d4af37;
+            --background-color: #000000;
+            --surface-color: #1a1a1a;
             --text-color: #e0e0e0;
             --gold-gradient: linear-gradient(45deg, #d4af37, #f9e29c);
         }
@@ -93,7 +94,9 @@
             cursor: pointer;
         }
 
-        .hidden { display: none; }
+        .hidden {
+            display: none;
+        }
 
         .profile-card {
             background: var(--surface-color);
@@ -111,9 +114,10 @@
         }
     </style>
 </head>
+
 <body>
     <nav class="navbar">
-        <a href="home_page.html" class="logo">Gram Sanjivani</a>
+        <a href="index.html" class="logo">Gram Sanjivani</a>
         <div class="nav-links">
             <button id="request-perms" class="primary-gold-btn">Enable Sensors</button>
         </div>
@@ -121,7 +125,7 @@
 
     <div id="main-content" class="content-area">
         <h2 style="color: var(--primary-color); text-align: center;">Smart Health Assistant</h2>
-        
+
         <div class="action-grid">
             <button id="btn-camera" class="action-btn">
                 <i class="fas fa-camera"></i>
@@ -138,10 +142,11 @@
         </div>
 
         <input type="file" id="file-input" hidden accept="image/*">
-        
+
         <div id="camera-section" class="hidden">
             <video id="camera-preview" autoplay playsinline></video>
-            <button id="btn-capture" class="primary-gold-btn" style="margin-top: 10px; width: 100%;">Capture & Analyze</button>
+            <button id="btn-capture" class="primary-gold-btn" style="margin-top: 10px; width: 100%;">Capture &
+                Analyze</button>
             <canvas id="photo-canvas" class="hidden"></canvas>
         </div>
 
@@ -155,4 +160,5 @@
 
     <script type="module" src="app.js"></script>
 </body>
+
 </html>

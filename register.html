@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,10 +10,14 @@
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
 
         :root {
-            --primary-color: #d4af37; /* Gold */
-            --secondary-color: #aa8a2e; /* Deep Gold */
-            --background-color: #000000; /* Black */
-            --surface-color: #1a1a1a; /* Dark Surface */
+            --primary-color: #d4af37;
+            /* Gold */
+            --secondary-color: #aa8a2e;
+            /* Deep Gold */
+            --background-color: #000000;
+            /* Black */
+            --surface-color: #1a1a1a;
+            /* Dark Surface */
             --text-color: #e0e0e0;
             --white: #ffffff;
             --error-color: #ff3333;
@@ -75,7 +80,8 @@
             margin-left: 30px;
         }
 
-        .nav-links a, .lang-btn {
+        .nav-links a,
+        .lang-btn {
             text-decoration: none;
             color: var(--white);
             font-weight: 600;
@@ -98,7 +104,8 @@
             color: #000;
         }
 
-        .nav-links a:hover, .nav-links a.active {
+        .nav-links a:hover,
+        .nav-links a.active {
             color: var(--primary-color);
         }
 
@@ -155,7 +162,7 @@
             font-size: 2.5rem;
             margin-bottom: 1rem;
             color: var(--primary-color);
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
         }
 
         .auth-form {
@@ -253,22 +260,32 @@
         }
 
         @media (max-width: 768px) {
-            .auth-container { flex-direction: column; max-width: 500px; }
-            .auth-image { min-height: 200px; }
-            .nav-links { display: none; }
+            .auth-container {
+                flex-direction: column;
+                max-width: 500px;
+            }
+
+            .auth-image {
+                min-height: 200px;
+            }
+
+            .nav-links {
+                display: none;
+            }
         }
     </style>
 </head>
+
 <body>
     <header>
         <nav class="container">
-            <a href="home_page.html" class="logo">Gramin Sanjivani</a>
+            <a href="index.html" class="logo">Gramin Sanjivani</a>
             <ul class="nav-links">
-                <li><a href="home_page.html" data-en="Home" data-hi="मुख्य पृष्ठ">Home</a></li>
-                <li><a href="home_page.html#about" data-en="About" data-hi="हमारे बारे में">About</a></li>
-                <li><a href="home_page.html#features" data-en="Features" data-hi="विशेषताएं">Features</a></li>
+                <li><a href="index.html" data-en="Home" data-hi="मुख्य पृष्ठ">Home</a></li>
+                <li><a href="index.html#about" data-en="About" data-hi="हमारे बारे में">About</a></li>
+                <li><a href="index.html#features" data-en="Features" data-hi="विशेषताएं">Features</a></li>
                 <li><a href="#" class="active" data-en="Login/Register" data-hi="लॉगिन/रजिस्टर">Login/Register</a></li>
-                <li><a href="home_page.html#contact" data-en="Contact" data-hi="संपर्क">Contact</a></li>
+                <li><a href="index.html#contact" data-en="Contact" data-hi="संपर्क">Contact</a></li>
                 <li><button id="langToggle" class="lang-btn">हिंदी</button></li>
             </ul>
         </nav>
@@ -278,9 +295,12 @@
         <div class="auth-container">
             <div class="auth-image">
                 <div class="auth-image-content">
-                    <h2 data-en="Your Health, Our Priority" data-hi="आपका स्वास्थ्य, हमारी प्राथमिकता">Your Health, Our Priority</h2>
-                    <p data-en="Join MediCare today and experience healthcare like never before. Our platform connects you with the best services." 
-                       data-hi="आज ही मेडिकेयर से जुड़ें और स्वास्थ्य सेवा का ऐसा अनुभव करें जैसा पहले कभी नहीं हुआ। हमारा प्लेटफ़ॉर्म आपको सर्वोत्तम सेवाओं से जोड़ता है।">Join MediCare today and experience healthcare like never before. Our platform connects you with the best services.</p>
+                    <h2 data-en="Your Health, Our Priority" data-hi="आपका स्वास्थ्य, हमारी प्राथमिकता">Your Health, Our
+                        Priority</h2>
+                    <p data-en="Join MediCare today and experience healthcare like never before. Our platform connects you with the best services."
+                        data-hi="आज ही मेडिकेयर से जुड़ें और स्वास्थ्य सेवा का ऐसा अनुभव करें जैसा पहले कभी नहीं हुआ। हमारा प्लेटफ़ॉर्म आपको सर्वोत्तम सेवाओं से जोड़ता है।">
+                        Join MediCare today and experience healthcare like never before. Our platform connects you with
+                        the best services.</p>
                 </div>
             </div>
             <div class="auth-form">
@@ -288,12 +308,15 @@
                     <h2 class="form-title" data-en="Login" data-hi="लॉगिन">Login</h2>
                     <form id="loginForm">
                         <div class="form-group">
-                            <label for="login-id" data-en="Email / Phone Number" data-hi="ईमेल / फोन नंबर">Email / Phone Number</label>
-                            <input type="text" id="login-id" class="form-control" placeholder="Enter email or phone" required>
+                            <label for="login-id" data-en="Email / Phone Number" data-hi="ईमेल / फोन नंबर">Email / Phone
+                                Number</label>
+                            <input type="text" id="login-id" class="form-control" placeholder="Enter email or phone"
+                                required>
                         </div>
                         <div class="form-group">
                             <label for="login-password" data-en="Password" data-hi="पासवर्ड">Password</label>
-                            <input type="password" id="login-password" class="form-control" placeholder="Enter password" required>
+                            <input type="password" id="login-password" class="form-control" placeholder="Enter password"
+                                required>
                         </div>
                         <div class="forgot-password">
                             <a href="#" data-en="Forgot Password?" data-hi="पासवर्ड भूल गए?">Forgot Password?</a>
@@ -301,7 +324,8 @@
                         <button type="submit" class="btn" data-en="Login" data-hi="लॉगिन करें">Login</button>
                     </form>
                     <div class="form-footer">
-                        <p><span data-en="Don't have an account?" data-hi="खाता नहीं है?">Don't have an account?</span> <a href="#" id="show-signup" data-en="Sign Up" data-hi="साइन अप">Sign Up</a></p>
+                        <p><span data-en="Don't have an account?" data-hi="खाता नहीं है?">Don't have an account?</span>
+                            <a href="#" id="show-signup" data-en="Sign Up" data-hi="साइन अप">Sign Up</a></p>
                     </div>
                 </div>
 
@@ -313,21 +337,28 @@
                             <input type="text" id="fullname" class="form-control" placeholder="Full Name" required>
                         </div>
                         <div class="form-group">
-                            <label for="email-phone" data-en="Email / Phone Number" data-hi="ईमेल / फोन नंबर">Email / Phone Number</label>
-                            <input type="text" id="email-phone" class="form-control" placeholder="Email or Phone Number" required>
+                            <label for="email-phone" data-en="Email / Phone Number" data-hi="ईमेल / फोन नंबर">Email /
+                                Phone Number</label>
+                            <input type="text" id="email-phone" class="form-control" placeholder="Email or Phone Number"
+                                required>
                         </div>
                         <div class="form-group">
                             <label for="password" data-en="Password" data-hi="पासवर्ड">Password</label>
-                            <input type="password" id="password" class="form-control" placeholder="Create password" required>
+                            <input type="password" id="password" class="form-control" placeholder="Create password"
+                                required>
                         </div>
                         <div class="form-group">
-                            <label for="confirm-password" data-en="Confirm Password" data-hi="पासवर्ड की पुष्टि करें">Confirm Password</label>
-                            <input type="password" id="confirm-password" class="form-control" placeholder="Confirm password" required>
+                            <label for="confirm-password" data-en="Confirm Password"
+                                data-hi="पासवर्ड की पुष्टि करें">Confirm Password</label>
+                            <input type="password" id="confirm-password" class="form-control"
+                                placeholder="Confirm password" required>
                         </div>
                         <button type="submit" class="btn" data-en="Sign Up" data-hi="साइन अप करें">Sign Up</button>
                     </form>
                     <div class="form-footer">
-                        <p><span data-en="Already have an account?" data-hi="पहले से ही एक खाता है?">Already have an account?</span> <a href="#" id="show-login" data-en="Login" data-hi="लॉगिन">Login</a></p>
+                        <p><span data-en="Already have an account?" data-hi="पहले से ही एक खाता है?">Already have an
+                                account?</span> <a href="#" id="show-login" data-en="Login" data-hi="लॉगिन">Login</a>
+                        </p>
                     </div>
                 </div>
             </div>
@@ -336,98 +367,100 @@
 
     <footer>
         <div class="container">
-            <p>&copy; 2026 MediCare. <span data-en="All rights reserved." data-hi="सर्वाधिकार सुरक्षित।">All rights reserved.</span></p>
+            <p>&copy; 2026 MediCare. <span data-en="All rights reserved." data-hi="सर्वाधिकार सुरक्षित।">All rights
+                    reserved.</span></p>
         </div>
     </footer>
 
-  <script type="module">
-    import { auth, db } from './firebase-config.js';
-    import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js";
-    import { doc, setDoc } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
+    <script type="module">
+        import { auth, db } from './firebase-config.js';
+        import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js";
+        import { doc, setDoc } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
 
-    const loginForm = document.getElementById('login-form');
-    const signupForm = document.getElementById('signup-form');
-    const showSignupLink = document.getElementById('show-signup');
-    const showLoginLink = document.getElementById('show-login');
-    const loginFormEl = document.getElementById('loginForm');
-    const signupFormEl = document.getElementById('signupForm');
+        const loginForm = document.getElementById('login-form');
+        const signupForm = document.getElementById('signup-form');
+        const showSignupLink = document.getElementById('show-signup');
+        const showLoginLink = document.getElementById('show-login');
+        const loginFormEl = document.getElementById('loginForm');
+        const signupFormEl = document.getElementById('signupForm');
 
-    // Toggle logic
-    showSignupLink.addEventListener('click', (e) => {
-        e.preventDefault();
-        loginForm.style.display = 'none';
-        signupForm.style.display = 'block';
-    });
+        // Toggle logic
+        showSignupLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            loginForm.style.display = 'none';
+            signupForm.style.display = 'block';
+        });
 
-    showLoginLink.addEventListener('click', (e) => {
-        e.preventDefault();
-        signupForm.style.display = 'none';
-        loginForm.style.display = 'block';
-    });
+        showLoginLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            signupForm.style.display = 'none';
+            loginForm.style.display = 'block';
+        });
 
-    // Handle Login Submission
-    loginFormEl.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        
-        const email = document.getElementById('login-id').value;
-        const password = document.getElementById('login-password').value;
-        const submitBtn = loginFormEl.querySelector('button[type="submit"]');
-        const originalText = submitBtn.innerText;
-        submitBtn.innerText = 'Loging in...';
-        submitBtn.disabled = true;
+        // Handle Login Submission
+        loginFormEl.addEventListener('submit', async (e) => {
+            e.preventDefault();
 
-        try {
-            await signInWithEmailAndPassword(auth, email, password);
-            alert("Login Successful!");
-            window.location.href = 'home_page.html';
-        } catch (error) {
-            alert("Login Failed: " + error.message);
-        } finally {
-            submitBtn.innerText = originalText;
-            submitBtn.disabled = false;
-        }
-    });
+            const email = document.getElementById('login-id').value;
+            const password = document.getElementById('login-password').value;
+            const submitBtn = loginFormEl.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerText;
+            submitBtn.innerText = 'Loging in...';
+            submitBtn.disabled = true;
 
-    // Handle Signup Submission
-    signupFormEl.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        
-        const fullname = document.getElementById('fullname').value;
-        const email = document.getElementById('email-phone').value;
-        const password = document.getElementById('password').value;
-        const confirmPassword = document.getElementById('confirm-password').value;
-        const submitBtn = signupFormEl.querySelector('button[type="submit"]');
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+                alert("Login Successful!");
+                window.location.href = 'home_page.html';
+            } catch (error) {
+                alert("Login Failed: " + error.message);
+            } finally {
+                submitBtn.innerText = originalText;
+                submitBtn.disabled = false;
+            }
+        });
 
-        if (password !== confirmPassword) {
-            alert("Passwords do not match!");
-            return;
-        }
+        // Handle Signup Submission
+        signupFormEl.addEventListener('submit', async (e) => {
+            e.preventDefault();
 
-        const originalText = submitBtn.innerText;
-        submitBtn.innerText = 'Creating account...';
-        submitBtn.disabled = true;
+            const fullname = document.getElementById('fullname').value;
+            const email = document.getElementById('email-phone').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            const submitBtn = signupFormEl.querySelector('button[type="submit"]');
 
-        try {
-            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-            const user = userCredential.user;
-            
-            // Save user profile details to Firestore
-            await setDoc(doc(db, "users", user.uid), {
-                fullname: fullname,
-                email: email,
-                role: 'patient',
-                createdAt: new Date()
-            });
+            if (password !== confirmPassword) {
+                alert("Passwords do not match!");
+                return;
+            }
 
-            alert("Account Created successfully!");
-            window.location.href = 'home_page.html';
-        } catch (error) {
-            alert("Signup Failed: " + error.message);
-        } finally {
-            submitBtn.innerText = originalText;
-            submitBtn.disabled = false;
-        }
-    });
-</script>
+            const originalText = submitBtn.innerText;
+            submitBtn.innerText = 'Creating account...';
+            submitBtn.disabled = true;
+
+            try {
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+
+                // Save user profile details to Firestore
+                await setDoc(doc(db, "users", user.uid), {
+                    fullname: fullname,
+                    email: email,
+                    role: 'patient',
+                    createdAt: new Date()
+                });
+
+                alert("Account Created successfully!");
+                window.location.href = 'home_page.html';
+            } catch (error) {
+                alert("Signup Failed: " + error.message);
+            } finally {
+                submitBtn.innerText = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+    </script>
 </body>
+
 </html>
