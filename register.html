@@ -340,12 +340,17 @@
         </div>
     </footer>
 
-  <script>
+  <script type="module">
+    import { auth, db } from './firebase-config.js';
+    import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js";
+    import { doc, setDoc } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
+
     const loginForm = document.getElementById('login-form');
     const signupForm = document.getElementById('signup-form');
     const showSignupLink = document.getElementById('show-signup');
     const showLoginLink = document.getElementById('show-login');
     const loginFormEl = document.getElementById('loginForm');
+    const signupFormEl = document.getElementById('signupForm');
 
     // Toggle logic
     showSignupLink.addEventListener('click', (e) => {
@@ -361,25 +366,67 @@
     });
 
     // Handle Login Submission
-    loginFormEl.addEventListener('submit', (e) => {
+    loginFormEl.addEventListener('submit', async (e) => {
         e.preventDefault();
         
-        // 1. Get the values (In a real app, you'd validate these with a server)
-        const userIdentifier = document.getElementById('login-id').value;
+        const email = document.getElementById('login-id').value;
+        const password = document.getElementById('login-password').value;
+        const submitBtn = loginFormEl.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerText;
+        submitBtn.innerText = 'Loging in...';
+        submitBtn.disabled = true;
+
+        try {
+            await signInWithEmailAndPassword(auth, email, password);
+            alert("Login Successful!");
+            window.location.href = 'home_page.html';
+        } catch (error) {
+            alert("Login Failed: " + error.message);
+        } finally {
+            submitBtn.innerText = originalText;
+            submitBtn.disabled = false;
+        }
+    });
+
+    // Handle Signup Submission
+    signupFormEl.addEventListener('submit', async (e) => {
+        e.preventDefault();
         
-        // 2. Create a Mock User Object
-        const mockUser = {
-            name: userIdentifier.split('@')[0], // Use part of email as name
-            role: 'patient', // Default role
-            isLoggedIn: true
-        };
+        const fullname = document.getElementById('fullname').value;
+        const email = document.getElementById('email-phone').value;
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirm-password').value;
+        const submitBtn = signupFormEl.querySelector('button[type="submit"]');
 
-        // 3. CRITICAL: Save to sessionStorage so home_page.html can see it
-        sessionStorage.setItem('user', JSON.stringify(mockUser));
+        if (password !== confirmPassword) {
+            alert("Passwords do not match!");
+            return;
+        }
 
-        // 4. Redirect to home page
-        alert("Login Successful!");
-        window.location.href = 'home_page.html';
+        const originalText = submitBtn.innerText;
+        submitBtn.innerText = 'Creating account...';
+        submitBtn.disabled = true;
+
+        try {
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            const user = userCredential.user;
+            
+            // Save user profile details to Firestore
+            await setDoc(doc(db, "users", user.uid), {
+                fullname: fullname,
+                email: email,
+                role: 'patient',
+                createdAt: new Date()
+            });
+
+            alert("Account Created successfully!");
+            window.location.href = 'home_page.html';
+        } catch (error) {
+            alert("Signup Failed: " + error.message);
+        } finally {
+            submitBtn.innerText = originalText;
+            submitBtn.disabled = false;
+        }
     });
 </script>
 </body>

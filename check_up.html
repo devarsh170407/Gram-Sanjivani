@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,10 +9,14 @@
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
 
         :root {
-            --primary-color: #d4af37; /* Gold */
-            --secondary-color: #aa8a2e; /* Deep Gold */
-            --background-color: #000000; /* Black */
-            --surface-color: #1a1a1a; /* Dark Grey/Black */
+            --primary-color: #d4af37;
+            /* Gold */
+            --secondary-color: #aa8a2e;
+            /* Deep Gold */
+            --background-color: #000000;
+            /* Black */
+            --surface-color: #1a1a1a;
+            /* Dark Grey/Black */
             --text-color: #e0e0e0;
             --white: #ffffff;
             --gold-gradient: linear-gradient(45deg, #d4af37, #f9e29c);
@@ -33,7 +38,8 @@
 
         .container {
             width: 90%;
-            max-width: 1000px; /* Narrowed slightly for a better 2x2 look */
+            max-width: 1000px;
+            /* Narrowed slightly for a better 2x2 look */
             margin: auto;
             padding: 2rem 0;
         }
@@ -89,7 +95,7 @@
 
         /* Page Banner */
         .page-banner {
-            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://i.ibb.co/1fDBbkGL/image.png') no-repeat center center/cover;
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://i.ibb.co/1fDBbkGL/image.png') no-repeat center center/cover;
             color: var(--white);
             text-align: center;
             padding: 8rem 0 4rem;
@@ -100,7 +106,7 @@
             font-size: 3rem;
             margin-bottom: 1rem;
             color: var(--primary-color);
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
         }
 
         .subtitle {
@@ -113,7 +119,8 @@
         /* Updated Disease Grid for 2x2 */
         .disease-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr); /* Force 2 columns */
+            grid-template-columns: repeat(2, 1fr);
+            /* Force 2 columns */
             gap: 2.5rem;
             margin-top: 3rem;
         }
@@ -238,13 +245,30 @@
 
         /* Responsive */
         @media (max-width: 768px) {
-            .disease-grid { grid-template-columns: 1fr; }
-            nav { width: 90%; }
-            .nav-links { display: none; }
-            h1 { font-size: 2.2rem; }
+            .disease-grid {
+                grid-template-columns: 1fr;
+            }
+
+            nav {
+                width: 90%;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            h1 {
+                font-size: 2.2rem;
+            }
         }
 
-        .user-menu { position: relative; cursor: pointer; color: var(--primary-color); font-weight: 600; }
+        .user-menu {
+            position: relative;
+            cursor: pointer;
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
         .user-dropdown {
             display: none;
             position: absolute;
@@ -256,17 +280,27 @@
             min-width: 150px;
             z-index: 100;
         }
-        .user-dropdown.active { display: block; }
-        .user-dropdown a { display: block; padding: 10px; color: var(--white); text-decoration: none; }
+
+        .user-dropdown.active {
+            display: block;
+        }
+
+        .user-dropdown a {
+            display: block;
+            padding: 10px;
+            color: var(--white);
+            text-decoration: none;
+        }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
+
 <body>
     <header class="nav-header">
         <nav>
-            <a href="home_page.html" class="logo">Gram Sanjivani</a>
+            <a href="index.html" class="logo">Gram Sanjivani</a>
             <ul class="nav-links">
-                <li><a href="home_page.html">Home</a></li>
+                <li><a href="index.html">Home</a></li>
                 <li id="auth-link"><a href="Register.html">Register</a></li>
             </ul>
         </nav>
@@ -338,7 +372,11 @@
         </div>
     </div>
 
-    <script>
+    <script type="module">
+        import { auth, db } from './firebase-config.js';
+        import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js";
+        import { collection, addDoc, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
+
         const modal = document.getElementById("checkupModal");
         const closeBtn = document.querySelector(".close");
         const checkupForm = document.getElementById("checkupForm");
@@ -348,16 +386,22 @@
         const loadingSpinner = document.getElementById("loadingSpinner");
         let currentUser = null;
 
-        document.addEventListener('DOMContentLoaded', function() {
-            const userString = sessionStorage.getItem('user');
+        onAuthStateChanged(auth, async (userAuth) => {
             const authLinkElement = document.getElementById('auth-link');
-            
-            if (userString) {
-                currentUser = JSON.parse(userString);
+
+            if (userAuth) {
+                const userDoc = await getDoc(doc(db, "users", userAuth.uid));
+                if (userDoc.exists()) {
+                    currentUser = userDoc.data();
+                    currentUser.id = userAuth.uid;
+                } else {
+                    currentUser = { name: "User", email: userAuth.email, role: "patient", id: userAuth.uid };
+                }
+
                 const userMenu = document.createElement('div');
                 userMenu.className = 'user-menu';
                 userMenu.innerHTML = `<span><i class="fas fa-user"></i> ${currentUser.name} <i class="fas fa-chevron-down"></i></span>`;
-                
+
                 const userDropdown = document.createElement('div');
                 userDropdown.className = 'user-dropdown';
                 userDropdown.innerHTML = `
@@ -367,14 +411,15 @@
                 userMenu.appendChild(userDropdown);
                 authLinkElement.innerHTML = '';
                 authLinkElement.appendChild(userMenu);
-                
+
                 userMenu.addEventListener('click', (e) => {
                     e.stopPropagation();
                     userDropdown.classList.toggle('active');
                 });
 
-                document.getElementById('logout-link').addEventListener('click', () => {
-                    sessionStorage.removeItem('user');
+                document.getElementById('logout-link').addEventListener('click', async (e) => {
+                    e.preventDefault();
+                    await signOut(auth);
                     window.location.reload();
                 });
 
@@ -382,7 +427,7 @@
             }
         });
 
-        function openModal(diseaseType) {
+        window.openModal = function (diseaseType) {
             if (!currentUser) {
                 alert('Please log in to request a check-up.');
                 window.location.href = 'Register.html';
@@ -397,7 +442,7 @@
         closeBtn.onclick = () => modal.style.display = "none";
         window.onclick = (e) => { if (e.target == modal) modal.style.display = "none"; }
 
-        checkupForm.onsubmit = function(e) {
+        checkupForm.onsubmit = async function (e) {
             e.preventDefault();
             submitText.style.display = 'none';
             loadingSpinner.style.display = 'inline-block';
@@ -408,30 +453,23 @@
                 name: document.getElementById("name").value,
                 email: document.getElementById("email").value,
                 phone: document.getElementById("phone").value,
-                diseaseType: diseaseTypeInput.value
+                diseaseType: diseaseTypeInput.value,
+                timestamp: new Date()
             };
 
-            fetch('/api/checkup-request', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(requestData),
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    alert(`Request received for ${requestData.diseaseType}!`);
-                    modal.style.display = "none";
-                } else {
-                    alert('Error submitting request.');
-                }
-            })
-            .catch(() => alert('Request submitted successfully.'))
-            .finally(() => {
+            try {
+                await addDoc(collection(db, "checkups"), requestData);
+                alert(`Request received for ${requestData.diseaseType}!`);
+                modal.style.display = "none";
+            } catch (error) {
+                alert('Error submitting request: ' + error.message);
+            } finally {
                 submitText.style.display = 'inline-block';
                 loadingSpinner.style.display = 'none';
                 submitBtn.disabled = false;
-            });
+            }
         }
     </script>
 </body>
+
 </html>
