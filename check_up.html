@@ -244,7 +244,18 @@
         }
 
         /* Responsive */
+        .hamburger {
+            display: none;
+            color: var(--white);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
         @media (max-width: 768px) {
+            .hamburger {
+                display: block;
+            }
+
             .disease-grid {
                 grid-template-columns: 1fr;
             }
@@ -255,6 +266,22 @@
 
             .nav-links {
                 display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 60px;
+                left: 0;
+                width: 100%;
+                background: rgba(0, 0, 0, 0.95);
+                padding: 1rem 0;
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .nav-links li {
+                margin: 15px 0;
+                text-align: center;
             }
 
             h1 {
@@ -299,7 +326,8 @@
     <header class="nav-header">
         <nav>
             <a href="index.html" class="logo">Gram Sanjivani</a>
-            <ul class="nav-links">
+            <i class="fas fa-bars hamburger" id="hamburgerMenu"></i>
+            <ul class="nav-links" id="navLinks">
                 <li><a href="index.html">Home</a></li>
                 <li id="auth-link"><a href="Register.html">Register</a></li>
             </ul>
@@ -468,6 +496,15 @@
                 loadingSpinner.style.display = 'none';
                 submitBtn.disabled = false;
             }
+        }
+
+        // Hamburger Menu Logic
+        const hamburgerMenu = document.getElementById('hamburgerMenu');
+        const navLinksId = document.getElementById('navLinks');
+        if (hamburgerMenu && navLinksId) {
+            hamburgerMenu.addEventListener('click', () => {
+                navLinksId.classList.toggle('active');
+            });
         }
     </script>
 </body>

@@ -281,7 +281,18 @@
             border-top: 1px solid #333;
         }
 
+        .hamburger {
+            display: none;
+            color: var(--white);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
         @media (max-width: 768px) {
+            .hamburger {
+                display: block;
+            }
+
             .auth-container {
                 flex-direction: column;
                 max-width: 500px;
@@ -293,6 +304,22 @@
 
             .nav-links {
                 display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 70px;
+                left: 0;
+                width: 100%;
+                background: rgba(0, 0, 0, 0.95);
+                padding: 1rem 0;
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .nav-links li {
+                margin: 15px 0;
+                text-align: center;
             }
         }
     </style>
@@ -302,7 +329,8 @@
     <header>
         <nav class="container">
             <a href="index.html" class="logo">Gramin Sanjivani</a>
-            <ul class="nav-links">
+            <i class="fas fa-bars hamburger" id="hamburgerMenu"></i>
+            <ul class="nav-links" id="navLinks">
                 <li><a href="index.html" data-en="Home" data-hi="मुख्य पृष्ठ">Home</a></li>
                 <li><a href="index.html#about" data-en="About" data-hi="हमारे बारे में">About</a></li>
                 <li><a href="index.html#features" data-en="Features" data-hi="विशेषताएं">Features</a></li>
@@ -581,9 +609,18 @@
             }
         });
 
+        // 0. Hamburger Menu Logic
+        const hamburgerMenu = document.getElementById('hamburgerMenu');
+        const navLinksId = document.getElementById('navLinks');
+        if (hamburgerMenu && navLinksId) {
+            hamburgerMenu.addEventListener('click', () => {
+                navLinksId.classList.toggle('active');
+            });
+        }
+
         // 1. Language Toggle Logic for Register.html
         const langToggle = document.getElementById('langToggle');
-        let currentLang = 'en';
+        let currentLang = localStorage.getItem('preferredLang') || 'en';
 
         const gujaratiDict = {
             "Home": "મુખ્ય પૃષ્ઠ",
@@ -615,16 +652,13 @@
             }
         });
 
-        langToggle.addEventListener('click', () => {
+        const updateLanguageUI = () => {
             if (currentLang === 'en') {
-                currentLang = 'hi';
-                langToggle.innerText = 'ગુજરાતી';
-            } else if (currentLang === 'hi') {
-                currentLang = 'gu';
-                langToggle.innerText = 'English';
-            } else {
-                currentLang = 'en';
                 langToggle.innerText = 'हिंदी';
+            } else if (currentLang === 'hi') {
+                langToggle.innerText = 'ગુજરાતી';
+            } else {
+                langToggle.innerText = 'English';
             }
 
             document.querySelectorAll('[data-en]').forEach(el => {
@@ -636,6 +670,21 @@
                     el.innerText = el.getAttribute('data-en') || el.innerText;
                 }
             });
+        };
+
+        // Initialize Language UI
+        updateLanguageUI();
+
+        langToggle.addEventListener('click', () => {
+            if (currentLang === 'en') {
+                currentLang = 'hi';
+            } else if (currentLang === 'hi') {
+                currentLang = 'gu';
+            } else {
+                currentLang = 'en';
+            }
+            localStorage.setItem('preferredLang', currentLang);
+            updateLanguageUI();
         });
     </script>
 </body>

@@ -12,7 +12,15 @@ btnVoice.onclick = () => {
     if (!Recognition) return alert("Browser not supported");
 
     const recognition = new Recognition();
-    recognition.lang = 'en-IN'; // Set to Indian English for better rural accent support
+
+    let preferredLang = localStorage.getItem('preferredLang') || 'en';
+    if (preferredLang === 'hi') {
+        recognition.lang = 'hi-IN';
+    } else if (preferredLang === 'gu') {
+        recognition.lang = 'gu-IN';
+    } else {
+        recognition.lang = 'en-IN';
+    }
 
     recognition.onstart = () => {
         btnVoice.querySelector('span').innerText = "Listening...";
@@ -38,22 +46,34 @@ btnVoice.onclick = () => {
 function processInitialSymptom(transcript) {
     const medicalDatabase = {
         headache: {
-            keywords: ['headache', 'migraine', 'head pain', 'headpain'],
+            keywords: ['headache', 'migraine', 'head pain', 'headpain', 'सिरदर्द', 'માથાનો દુખાવો'],
             remedy: "Apply a cold compress to your forehead and rest in a dark room.",
             ayurvedic: "Massage your temples with warm Brahmi oil or peppermint oil.",
-            voiceResponse: "It sounds like you have a headache. For a home remedy, apply a cold compress. In Ayurveda, Brahmi oil massage is very effective."
+            voiceResponse: {
+                en: "It sounds like you have a headache. For a home remedy, apply a cold compress. In Ayurveda, Brahmi oil massage is very effective.",
+                hi: "ऐसा लगता है कि आपको सिरदर्द है। घरेलू उपचार के लिए, ठंडी सिकाई करें। आयुर्वेद में, ब्राह्मी तेल की मालिश बहुत प्रभावी है।",
+                gu: "લાગે છે કે તમને માથાનો દુખાવો છે. ઘરેલું ઉપચાર માટે, ઠંડી પટ્ટી લગાવો. આયુર્વેદમાં, બ્રાહ્મી તેલની માલિશ ખૂબ અસરકારક છે."
+            }
         },
         stomach: {
-            keywords: ['stomachache', 'pain in stomach', 'diarrhea', 'stomach pain'],
+            keywords: ['stomachache', 'pain in stomach', 'diarrhea', 'stomach pain', 'पेट दर्द', 'પેટમાં દુખાવો'],
             remedy: "Drink ginger tea and stay hydrated with electrolytes.",
             ayurvedic: "Take a teaspoon of Ajwain with a pinch of black salt and warm water.",
-            voiceResponse: "For stomach pain or diarrhea, ginger tea is a great home remedy. The Ayurvedic solution is taking Ajwain with warm water."
+            voiceResponse: {
+                en: "For stomach pain or diarrhea, ginger tea is a great home remedy. The Ayurvedic solution is taking Ajwain with warm water.",
+                hi: "पेट दर्द या दस्त के लिए अदरक की चाय एक बढ़िया घरेलू उपाय है। आयुर्वेदिक समाधान अजवाइन को गर्म पानी के साथ लेना है।",
+                gu: "પેટના દુખાવા માટે આદુવાળી ચા એક સારો ઉપાય છે. આયુર્વેદિક ઉપાય મુજબ ગરમ પાણી સાથે અજમો લેવો જોઈએ."
+            }
         },
         itch: {
-            keywords: ['itch in legs', 'smell in legs', 'itching'],
+            keywords: ['itch in legs', 'smell in legs', 'itching', 'खुजली', 'ખંજવાળ'],
             remedy: "Wash your legs with mild soap and apply coconut oil or aloe vera.",
             ayurvedic: "Apply a paste of Neem leaves or use Turmeric mixed with honey on the affected area.",
-            voiceResponse: "For leg itching or smell, use coconut oil as a home remedy. In Ayurveda, Neem paste is highly recommended."
+            voiceResponse: {
+                en: "For leg itching or smell, use coconut oil as a home remedy. In Ayurveda, Neem paste is highly recommended.",
+                hi: "पैरों में खुजली या गंध के लिए, नारियल के तेल का उपयोग करें। आयुर्वेद में, नीम के पेस्ट की अनुशंसा की जाती है।",
+                gu: "પગમાં ખંજવાળ માટે, ઘરેલુ ઉપચાર તરીકે નાળિયેર તેલનો ઉપયોગ કરો. આયુર્વેદમાં લીમડાની પેસ્ટનો ઉપયોગ ખૂબ જ ફાયદાકારક છે."
+            }
         }
     };
 
@@ -68,10 +88,16 @@ function processInitialSymptom(transcript) {
     }
 
     if (!found) {
-        const fallback = "I'm sorry, I didn't catch that. Please mention if you have a headache, stomach pain, or itching legs.";
+        const fallbackObj = {
+            en: "I'm sorry, I didn't catch that. Please mention if you have a headache, stomach pain, or itching.",
+            hi: "मुझे खेद है, मुझे समझ नहीं आया। कृपया बताएं कि क्या आपको सिरदर्द, पेट में दर्द या खुजली है।",
+            gu: "માફ કરશો, મને સમજાયું નહિ. કૃપા કરીને કહો કે શું તમને માથાનો દુખાવો, પેટનો દુખાવો અથવા ખંજવાળ છે."
+        };
+        const preferredLang = localStorage.getItem('preferredLang') || 'en';
+        const fallbackText = fallbackObj[preferredLang];
         resIssue.innerText = "Symptom not recognized";
-        resRemedy.innerText = fallback;
-        speak(fallback);
+        resRemedy.innerText = fallbackText;
+        speak(fallbackObj);
     }
 }
 
@@ -92,10 +118,20 @@ function displayAndSpeakResult(data) {
     }
 }
 
-function speak(text) {
+function speak(textObject) {
     window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'en-IN';
+
+    let lang = localStorage.getItem('preferredLang') || 'en';
+    let textToSpeak = typeof textObject === 'string' ? textObject : (textObject[lang] || textObject.en);
+
+    const utterance = new SpeechSynthesisUtterance(textToSpeak);
+    if (lang === 'hi') {
+        utterance.lang = 'hi-IN';
+    } else if (lang === 'gu') {
+        utterance.lang = 'gu-IN';
+    } else {
+        utterance.lang = 'en-IN';
+    }
     window.speechSynthesis.speak(utterance);
 }
 
@@ -162,7 +198,12 @@ fileInput.onchange = async (e) => {
         resWarning.innerText = analysis.warning;
 
         // 4. Voice Feedback (Optional: Speaks the result to the user)
-        speak(`Analysis complete. We detected ${analysis.issue}. ${analysis.remedy}`);
+        const voiceResponses = {
+            en: `Analysis complete. We detected ${analysis.issue}. ${analysis.remedy}`,
+            hi: `विश्लेषण पूर्ण हुआ। हमने संपर्क डर्मेटाइटिस का पता लगाया है। ठंडी सिकाई और एलोवेरा जेल लगाएं।`,
+            gu: `વિશ્લેષણ પૂર્ણ થયું. અમે સંપર્ક ત્વચાકોપ શોધી કાઢ્યું છે. ઠંડી પટ્ટી અને કુંવારપાઠા નો ગર લગાવો.`
+        };
+        speak(voiceResponses);
 
         // Save to Firestore
         if (auth.currentUser) {

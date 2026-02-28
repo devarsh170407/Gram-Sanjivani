@@ -418,13 +418,40 @@
             border-radius: 5px;
         }
 
+        .hamburger {
+            display: none;
+            color: var(--white);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
         @media (max-width: 768px) {
+            .hamburger {
+                display: block;
+            }
+
             .container {
                 width: 90%;
             }
 
             .nav-links {
                 display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 70px;
+                left: 0;
+                width: 100%;
+                background: rgba(0, 0, 0, 0.95);
+                padding: 1rem 0;
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .nav-links li {
+                margin: 15px 0;
+                text-align: center;
             }
 
             .hero h1 {
@@ -468,7 +495,8 @@
     <header>
         <nav class="container">
             <a href="#" class="logo">Gram Sanjivani</a>
-            <ul class="nav-links">
+            <i class="fas fa-bars hamburger" id="hamburgerMenu"></i>
+            <ul class="nav-links" id="navLinks">
                 <li><a href="#home" data-en="Home" data-hi="मुख्य पृष्ठ" data-gu="મુખ્ય પૃષ્ઠ">Home</a></li>
                 <li><a href="#about" data-en="About" data-hi="हमारे बारे में" data-gu="અમારા વિશે">About</a></li>
                 <li><a href="#features" data-en="Features" data-hi="विशेषताएं" data-gu="સુવિધાઓ">Features</a></li>
@@ -645,9 +673,18 @@
         import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js";
         import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
 
+        // 0. Hamburger Menu Logic
+        const hamburgerMenu = document.getElementById('hamburgerMenu');
+        const navLinksId = document.getElementById('navLinks');
+        if (hamburgerMenu && navLinksId) {
+            hamburgerMenu.addEventListener('click', () => {
+                navLinksId.classList.toggle('active');
+            });
+        }
+
         // 1. Language Toggle Logic with Gujarati Dynamic Mapping
         const langToggle = document.getElementById('langToggle');
-        let currentLang = 'en';
+        let currentLang = localStorage.getItem('preferredLang') || 'en';
 
         const gujaratiDict = {
             "Home": "મુખ્ય પૃષ્ઠ",
@@ -672,16 +709,13 @@
             }
         });
 
-        langToggle.addEventListener('click', () => {
+        const updateLanguageUI = () => {
             if (currentLang === 'en') {
-                currentLang = 'hi';
-                langToggle.innerText = 'ગુજરાતી';
-            } else if (currentLang === 'hi') {
-                currentLang = 'gu';
-                langToggle.innerText = 'English';
-            } else {
-                currentLang = 'en';
                 langToggle.innerText = 'हिंदी';
+            } else if (currentLang === 'hi') {
+                langToggle.innerText = 'ગુજરાતી';
+            } else {
+                langToggle.innerText = 'English';
             }
 
             document.querySelectorAll('[data-en]').forEach(el => {
@@ -697,9 +731,24 @@
             document.querySelectorAll('input, textarea').forEach(el => {
                 if (el.placeholder === "Your Name" || el.placeholder === "आपका नाम" || el.placeholder === "તમારું નામ")
                     el.placeholder = currentLang === 'en' ? "Your Name" : currentLang === 'hi' ? "आपका नाम" : "તમારું નામ";
-                if (el.placeholder === "Your Message" || el.placeholder === "आपका संदेश" || el.placeholder === "તમારો સંદેશ")
-                    el.placeholder = currentLang === 'en' ? "Your Message" : currentLang === 'hi' ? "आपका संदेश" : "તમારો સંદેશ";
+                if (el.placeholder === "Your Message" || el.placeholder === "आपका संदेश" || el.placeholder === "તમારો संदेश")
+                    el.placeholder = currentLang === 'en' ? "Your Message" : currentLang === 'hi' ? "आपका संदेश" : "તમારો संदेश";
             });
+        };
+
+        // Initialize Language UI
+        updateLanguageUI();
+
+        langToggle.addEventListener('click', () => {
+            if (currentLang === 'en') {
+                currentLang = 'hi';
+            } else if (currentLang === 'hi') {
+                currentLang = 'gu';
+            } else {
+                currentLang = 'en';
+            }
+            localStorage.setItem('preferredLang', currentLang);
+            updateLanguageUI();
         });
 
         // 2. Emergency Pop-up Logic
