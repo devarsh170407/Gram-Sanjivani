@@ -10,12 +10,17 @@
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
 
         /* Google Translate Script */
-        .goog-te-banner-frame.skiptranslate {
+        iframe.goog-te-banner-frame {
+            display: none !important;
+        }
+
+        .goog-te-banner-frame {
             display: none !important;
         }
 
         body {
             top: 0px !important;
+            position: static !important;
         }
 
         .goog-logo-link {
@@ -24,6 +29,14 @@
 
         .goog-te-gadget {
             color: transparent !important;
+        }
+
+        #goog-gt-tt {
+            display: none !important;
+        }
+
+        .goog-tooltip skiptranslate {
+            display: none !important;
         }
 
         :root {

@@ -437,12 +437,17 @@
         }
 
         /* Hide Google Translate top bar & elements we don't need */
-        .goog-te-banner-frame.skiptranslate {
+        iframe.goog-te-banner-frame {
+            display: none !important;
+        }
+
+        .goog-te-banner-frame {
             display: none !important;
         }
 
         body {
             top: 0px !important;
+            position: static !important;
         }
 
         .goog-logo-link {
@@ -451,6 +456,14 @@
 
         .goog-te-gadget {
             color: transparent !important;
+        }
+
+        #goog-gt-tt {
+            display: none !important;
+        }
+
+        .goog-tooltip skiptranslate {
+            display: none !important;
         }
 
         @media (max-width: 768px) {
