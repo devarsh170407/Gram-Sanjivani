@@ -154,8 +154,18 @@ function speak(textObject) {
     // Explicitly try to find local browser or Google-provided voices for the target language
     const voices = window.speechSynthesis.getVoices();
     if (voices.length > 0) {
+        // Priority 1: Exact Google language match (e.g. Google ગુજરાતી)
         let bestVoice = voices.find(v => v.lang === targetLang && v.name.includes('Google'));
+
+        // Priority 2: Any voice matching the language code (e.g. gu-IN)
         if (!bestVoice) bestVoice = voices.find(v => v.lang.startsWith(lang));
+
+        // Priority 3: If Gujarati is selected but NO Gujarati voice exists on this phone/PC, 
+        // fall back to a Hindi voice so it at least attempts to speak the Gujarati script.
+        if (!bestVoice && lang === 'gu') {
+            bestVoice = voices.find(v => v.lang.startsWith('hi'));
+        }
+
         if (bestVoice) {
             utterance.voice = bestVoice;
         }
@@ -163,6 +173,9 @@ function speak(textObject) {
 
     // Bug workaround for long text in Chrome
     utterance.rate = 0.9;
+
+    // Add an event listener to catch errors
+    utterance.onerror = (e) => console.error("Speech Synthesis Error:", e);
 
     window.speechSynthesis.speak(utterance);
 }
