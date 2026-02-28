@@ -75,7 +75,8 @@
         /* Header Styles */
         header {
             background: rgba(0, 0, 0, 0.9);
-            padding: 1rem 0;
+            padding: 3rem 0 1rem 0;
+            /* Increased top padding to leave space for Google Translate banner */
             border-bottom: 1px solid var(--primary-color);
             position: fixed;
             width: 100%;
@@ -86,7 +87,8 @@
 
         header.scrolled {
             background: rgba(0, 0, 0, 1);
-            padding: 0.5rem 0;
+            padding: 2.5rem 0 0.5rem 0;
+            /* Kept top padding large even when scrolled */
         }
 
         nav {
