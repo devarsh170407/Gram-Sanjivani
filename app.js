@@ -2,7 +2,7 @@ import { auth, db } from './firebase-config.js';
 import { collection, addDoc } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
 
 // app.js logic for Voice, Camera, and Upload
-const GEMINI_API_KEY = "AIzaSyAqdzmOXCsV4Ubxv8xGEYPLMt6hRj7JR4A"; // IMPORTANT: Replace this with your actual Gemini API Key
+const GEMINI_API_KEY = ""; // IMPORTANT: Replace this with your actual Gemini API Key
 
 // 1. Voice-to-Voice Logic
 const btnVoice = document.getElementById('btn-voice');
