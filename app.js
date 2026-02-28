@@ -1,12 +1,6 @@
 import { auth, db } from './firebase-config.js';
 import { collection, addDoc } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
 
-// app.js logic for Voice, Camera, and Upload
-// Obfuscating the API key so GitHub scanners don't instantly flag and disable it
-const _p1 = "QUl6YVN5Q1kt"; // "AIzaSyCY-"
-const _p2 = "TVNmbkFldFFuSzh4eUtpMEVfakVTbEZ3bjJnZnBj"; // "MSfnAetQnK8xyKi0E_jESlFwn2gfpc"
-const GEMINI_API_KEY = atob(_p1) + atob(_p2);
-
 // 1. Voice-to-Voice Logic
 const btnVoice = document.getElementById('btn-voice');
 let voiceState = { awaitingFollowUp: false, currentSymptom: null };
@@ -80,20 +74,18 @@ Format your response as a valid JSON object with exactly three fields (no markdo
 
 Keep the answers concise and easy to understand for rural users. Return ONLY the JSON object.`;
 
-        if (GEMINI_API_KEY === "YOUR_API_KEY_HERE" || GEMINI_API_KEY.trim() === "") {
-            throw new Error("API Key Missing! Please add your Gemini API Key at the top of app.js.");
-        }
-
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+        // Send request to our secure Vercel backend instead of Google directly
+        const response = await fetch('/api/gemini', {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                contents: [{ parts: [{ text: prompt }] }]
-            })
+            body: JSON.stringify({ prompt: prompt })
         });
 
         const data = await response.json();
-        if (!response.ok) throw new Error(data.error?.message || "Failed to fetch from Gemini API");
+
+        if (!response.ok) {
+            throw new Error(data.error || "Failed to fetch from backend");
+        }
 
         const aiText = data.candidates[0].content.parts[0].text;
 
