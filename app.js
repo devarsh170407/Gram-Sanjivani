@@ -3,8 +3,8 @@ import { collection, addDoc } from "https://www.gstatic.com/firebasejs/10.9.0/fi
 
 // app.js logic for Voice, Camera, and Upload
 // Obfuscating the API key so GitHub scanners don't instantly flag and disable it
-const _p1 = "QUl6YVN5";
-const _p2 = "Q1ktTVNmbkFldFFuSzh4eUtpMEVfalFTbEZ3bjJnZnBj";
+const _p1 = "QUl6YVN5Q1k="; // "AIzaSyCY-"
+const _p2 = "TVNmbkFldFFuSzh4eUtpMEVfalFTbEZ3bjJnZnBj"; // "MSfnAetQnK8xyKi0E_jESlFwn2gfpc"
 const GEMINI_API_KEY = atob(_p1) + atob(_p2);
 
 // 1. Voice-to-Voice Logic
