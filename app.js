@@ -144,15 +144,31 @@ function speak(textObject) {
     let textToSpeak = typeof textObject === 'string' ? textObject : (textObject[lang] || textObject.en);
 
     const utterance = new SpeechSynthesisUtterance(textToSpeak);
-    if (lang === 'hi') {
-        utterance.lang = 'hi-IN';
-    } else if (lang === 'gu') {
-        utterance.lang = 'gu-IN';
-    } else {
-        utterance.lang = 'en-IN';
+
+    let targetLang = 'en-US';
+    if (lang === 'hi') targetLang = 'hi-IN';
+    else if (lang === 'gu') targetLang = 'gu-IN';
+
+    utterance.lang = targetLang;
+
+    // Explicitly try to find local browser or Google-provided voices for the target language
+    const voices = window.speechSynthesis.getVoices();
+    if (voices.length > 0) {
+        let bestVoice = voices.find(v => v.lang === targetLang && v.name.includes('Google'));
+        if (!bestVoice) bestVoice = voices.find(v => v.lang.startsWith(lang));
+        if (bestVoice) {
+            utterance.voice = bestVoice;
+        }
     }
+
+    // Bug workaround for long text in Chrome
+    utterance.rate = 0.9;
+
     window.speechSynthesis.speak(utterance);
 }
+
+// Preload voices to ensure they are available when speak() is called
+window.speechSynthesis.onvoiceschanged = () => { window.speechSynthesis.getVoices(); };
 
 
 
