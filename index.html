@@ -19,15 +19,21 @@
         src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
     <!-- Google Translate Override Script -->
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const observer = new MutationObserver(() => {
-                const banner = document.querySelector('.goog-te-banner-frame');
-                if (banner) {
-                    banner.style.display = 'none';
-                    document.body.style.top = '0px';
-                }
+        const removeGoogleTranslateBanner = () => {
+            const elements = document.querySelectorAll('.goog-te-banner-frame, iframe.goog-te-banner-frame');
+            elements.forEach(el => {
+                el.style.display = 'none';
+                el.style.visibility = 'hidden';
             });
-            observer.observe(document.body, { childList: true, subtree: true });
+            document.body.style.top = '0px';
+            document.documentElement.style.top = '0px';
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            removeGoogleTranslateBanner();
+            const observer = new MutationObserver(removeGoogleTranslateBanner);
+            observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style'] });
+            observer.observe(document.documentElement, { attributes: true, attributeFilter: ['style'] });
         });
     </script>
 
@@ -450,17 +456,19 @@
         }
 
         /* Hide Google Translate top bar & elements we don't need */
-        iframe.goog-te-banner-frame {
-            display: none !important;
-        }
-
+        iframe.goog-te-banner-frame,
         .goog-te-banner-frame {
             display: none !important;
+            visibility: hidden !important;
         }
 
         body {
             top: 0px !important;
             position: static !important;
+        }
+
+        html {
+            top: 0px !important;
         }
 
         .goog-logo-link {
@@ -469,14 +477,15 @@
 
         .goog-te-gadget {
             color: transparent !important;
+            font-size: 0px !important;
         }
 
-        #goog-gt-tt {
+        #goog-gt-tt,
+        .goog-tooltip,
+        .goog-tooltip skiptranslate,
+        .skiptranslate.goog-te-banner-frame {
             display: none !important;
-        }
-
-        .goog-tooltip skiptranslate {
-            display: none !important;
+            visibility: hidden !important;
         }
 
         @media (max-width: 768px) {
