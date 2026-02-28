@@ -9,6 +9,23 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
 
+        /* Google Translate Script */
+        .goog-te-banner-frame.skiptranslate {
+            display: none !important;
+        }
+
+        body {
+            top: 0px !important;
+        }
+
+        .goog-logo-link {
+            display: none !important;
+        }
+
+        .goog-te-gadget {
+            color: transparent !important;
+        }
+
         :root {
             --primary-color: #d4af37;
             /* Gold */
@@ -326,6 +343,16 @@
 </head>
 
 <body>
+    <!-- Google Translate Script -->
+    <div id="google_translate_element" style="display: none;"></div>
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({ pageLanguage: 'en', includedLanguages: 'hi,gu,en', autoDisplay: false }, 'google_translate_element');
+        }
+    </script>
+    <script type="text/javascript"
+        src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
     <header>
         <nav class="container">
             <a href="index.html" class="logo">Gramin Sanjivani</a>
@@ -618,74 +645,50 @@
             });
         }
 
-        // 1. Language Toggle Logic for Register.html
+        // 1. Language Toggle Logic utilizing Google Translate Widget
         const langToggle = document.getElementById('langToggle');
         let currentLang = localStorage.getItem('preferredLang') || 'en';
 
-        const gujaratiDict = {
-            "Home": "મુખ્ય પૃષ્ઠ",
-            "About": "અમારા વિશે",
-            "Features": "સુવિધાઓ",
-            "Login/Register": "લોગિન/રજીસ્ટર",
-            "Contact": "સંપર્ક કરો",
-            "Your Health, Our Priority": "તમારું સ્વાસ્થ્ય, અમારી પ્રાથમિકતા",
-            "Join MediCare today and experience healthcare like never before. Our platform connects you with the best services.": "આજે જ MediCare સાથે જોડાઓ અને પહેલાં ક્યારેય ન અનુભવી હોય તેવી આરોગ્ય સંભાળનો અનુભવ કરો.",
-            "Login": "લોગિન",
-            "Email / Phone Number": "ઈમેલ / ફોન નંબર",
-            "Password": "પાસવર્ડ",
-            "Forgot Password?": "પાસવર્ડ ભૂલી ગયા છો?",
-            "Don't have an account?": "શું ખાતું નથી?",
-            "Sign Up": "સાઇન અપ",
-            "Create Account": "ખાતું બનાવો",
-            "Full Name": "પૂરું નામ",
-            "Confirm Password": "પાસવર્ડ કન્ફર્મ કરો",
-            "Already have an account?": "શું પહેલેથી જ ખાતું છે?",
-            "All rights reserved.": "બધા હકો અમારી પાસે રાખેલા છે.",
-            "Sign Up": "સાઇન અપ કરે"
+        const getLangName = (l) => {
+            if (l === 'hi') return 'ગુજરાતી';
+            if (l === 'gu') return 'English';
+            return 'हिंदी';
         };
 
-        // Pre-fill missing data-gu
-        document.querySelectorAll('[data-en]').forEach(el => {
-            if (!el.hasAttribute('data-gu')) {
-                const enText = el.getAttribute('data-en');
-                el.setAttribute('data-gu', gujaratiDict[enText] || enText);
+        const updateTranslateWidget = (langCode) => {
+            const select = document.querySelector('.goog-te-combo');
+            if (select) {
+                select.value = langCode;
+                select.dispatchEvent(new Event('change'));
             }
-        });
+        };
 
-        const updateLanguageUI = () => {
-            if (currentLang === 'en') {
-                langToggle.innerText = 'हिंदी';
-            } else if (currentLang === 'hi') {
-                langToggle.innerText = 'ગુજરાતી';
-            } else {
-                langToggle.innerText = 'English';
-            }
+        if (langToggle) {
+            langToggle.innerText = getLangName(currentLang);
 
-            document.querySelectorAll('[data-en]').forEach(el => {
-                const translation = el.getAttribute(`data-${currentLang}`);
-                if (translation) {
-                    el.innerText = translation;
-                } else if (currentLang === 'gu') {
-                    // Fallback to english if missing gu
-                    el.innerText = el.getAttribute('data-en') || el.innerText;
-                }
+            // Auto translate on load
+            window.addEventListener('load', () => {
+                setTimeout(() => {
+                    if (currentLang !== 'en') {
+                        updateTranslateWidget(currentLang);
+                    }
+                }, 1000); // Allow widget to load
             });
-        };
 
-        // Initialize Language UI
-        updateLanguageUI();
+            langToggle.addEventListener('click', () => {
+                if (currentLang === 'en') {
+                    currentLang = 'hi';
+                } else if (currentLang === 'hi') {
+                    currentLang = 'gu';
+                } else {
+                    currentLang = 'en';
+                }
+                localStorage.setItem('preferredLang', currentLang);
+                langToggle.innerText = getLangName(currentLang);
 
-        langToggle.addEventListener('click', () => {
-            if (currentLang === 'en') {
-                currentLang = 'hi';
-            } else if (currentLang === 'hi') {
-                currentLang = 'gu';
-            } else {
-                currentLang = 'en';
-            }
-            localStorage.setItem('preferredLang', currentLang);
-            updateLanguageUI();
-        });
+                updateTranslateWidget(currentLang);
+            });
+        }
     </script>
 </body>
 

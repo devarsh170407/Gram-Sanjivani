@@ -2,6 +2,7 @@ import { auth, db } from './firebase-config.js';
 import { collection, addDoc } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
 
 // app.js logic for Voice, Camera, and Upload
+const GEMINI_API_KEY = "YOUR_API_KEY_HERE"; // IMPORTANT: Replace this with your actual Gemini API Key
 
 // 1. Voice-to-Voice Logic
 const btnVoice = document.getElementById('btn-voice');
@@ -43,61 +44,79 @@ btnVoice.onclick = () => {
 
     recognition.start();
 };
-function processInitialSymptom(transcript) {
-    const medicalDatabase = {
-        headache: {
-            keywords: ['headache', 'migraine', 'head pain', 'headpain', 'सिरदर्द', 'માથાનો દુખાવો'],
-            remedy: "Apply a cold compress to your forehead and rest in a dark room.",
-            ayurvedic: "Massage your temples with warm Brahmi oil or peppermint oil.",
-            voiceResponse: {
-                en: "It sounds like you have a headache. For a home remedy, apply a cold compress. In Ayurveda, Brahmi oil massage is very effective.",
-                hi: "ऐसा लगता है कि आपको सिरदर्द है। घरेलू उपचार के लिए, ठंडी सिकाई करें। आयुर्वेद में, ब्राह्मी तेल की मालिश बहुत प्रभावी है।",
-                gu: "લાગે છે કે તમને માથાનો દુખાવો છે. ઘરેલું ઉપચાર માટે, ઠંડી પટ્ટી લગાવો. આયુર્વેદમાં, બ્રાહ્મી તેલની માલિશ ખૂબ અસરકારક છે."
-            }
-        },
-        stomach: {
-            keywords: ['stomachache', 'pain in stomach', 'diarrhea', 'stomach pain', 'पेट दर्द', 'પેટમાં દુખાવો'],
-            remedy: "Drink ginger tea and stay hydrated with electrolytes.",
-            ayurvedic: "Take a teaspoon of Ajwain with a pinch of black salt and warm water.",
-            voiceResponse: {
-                en: "For stomach pain or diarrhea, ginger tea is a great home remedy. The Ayurvedic solution is taking Ajwain with warm water.",
-                hi: "पेट दर्द या दस्त के लिए अदरक की चाय एक बढ़िया घरेलू उपाय है। आयुर्वेदिक समाधान अजवाइन को गर्म पानी के साथ लेना है।",
-                gu: "પેટના દુખાવા માટે આદુવાળી ચા એક સારો ઉપાય છે. આયુર્વેદિક ઉપાય મુજબ ગરમ પાણી સાથે અજમો લેવો જોઈએ."
-            }
-        },
-        itch: {
-            keywords: ['itch in legs', 'smell in legs', 'itching', 'खुजली', 'ખંજવાળ'],
-            remedy: "Wash your legs with mild soap and apply coconut oil or aloe vera.",
-            ayurvedic: "Apply a paste of Neem leaves or use Turmeric mixed with honey on the affected area.",
-            voiceResponse: {
-                en: "For leg itching or smell, use coconut oil as a home remedy. In Ayurveda, Neem paste is highly recommended.",
-                hi: "पैरों में खुजली या गंध के लिए, नारियल के तेल का उपयोग करें। आयुर्वेद में, नीम के पेस्ट की अनुशंसा की जाती है।",
-                gu: "પગમાં ખંજવાળ માટે, ઘરેલુ ઉપચાર તરીકે નાળિયેર તેલનો ઉપયોગ કરો. આયુર્વેદમાં લીમડાની પેસ્ટનો ઉપયોગ ખૂબ જ ફાયદાકારક છે."
-            }
-        }
-    };
+async function processInitialSymptom(transcript) {
+    const resIssue = document.getElementById('res-issue');
+    const resRemedy = document.getElementById('res-remedy');
+    const resWarning = document.getElementById('res-warning');
+    const resultSection = document.getElementById('analysis-result');
 
-    let found = false;
-    for (let category in medicalDatabase) {
-        const item = medicalDatabase[category];
-        if (item.keywords.some(keyword => transcript.includes(keyword))) {
-            displayAndSpeakResult(item);
-            found = true;
-            break;
-        }
-    }
+    resultSection.classList.remove('hidden');
+    resIssue.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Analyzing your symptoms...`;
+    resRemedy.innerText = "Please wait while our AI medical assistant generates a safe response.";
+    resWarning.innerText = "";
 
-    if (!found) {
-        const fallbackObj = {
-            en: "I'm sorry, I didn't catch that. Please mention if you have a headache, stomach pain, or itching.",
-            hi: "मुझे खेद है, मुझे समझ नहीं आया। कृपया बताएं कि क्या आपको सिरदर्द, पेट में दर्द या खुजली है।",
-            gu: "માફ કરશો, મને સમજાયું નહિ. કૃપા કરીને કહો કે શું તમને માથાનો દુખાવો, પેટનો દુખાવો અથવા ખંજવાળ છે."
-        };
-        const preferredLang = localStorage.getItem('preferredLang') || 'en';
-        const fallbackText = fallbackObj[preferredLang];
-        resIssue.innerText = "Symptom not recognized";
-        resRemedy.innerText = fallbackText;
-        speak(fallbackObj);
+    speak({
+        en: "Analyzing your symptoms, please wait.",
+        hi: "आपके लक्षणों का विश्लेषण किया जा रहा है, कृपया प्रतीक्षा करें।",
+        gu: "તમારા લક્ષણોનું વિશ્લેષણ કરવામાં આવી રહ્યું છે, કૃપા કરીને રાહ જુઓ."
+    });
+
+    try {
+        let preferredLang = localStorage.getItem('preferredLang') || 'en';
+        let languageInstruction = "English";
+        if (preferredLang === 'hi') languageInstruction = "Hindi (हिंदी)";
+        if (preferredLang === 'gu') languageInstruction = "Gujarati (ગુજરાતી)";
+
+        const prompt = `You are an expert AI medical assistant for the Gram Sanjivani app. 
+The user said the following symptoms: "${transcript}".
+Please provide a response IN THE ${languageInstruction} LANGUAGE ONLY.
+Format your response as a valid JSON object with exactly three fields (no markdown formatting):
+1. "remedy": A safe, general home remedy for this issue.
+2. "ayurvedic": An Ayurvedic solution for this issue.
+3. "voiceResponse": A short 1-2 sentence conversational reply combining the remedy and ayurvedic approach to be spoken aloud by the voice assistant.
+
+Keep the answers concise and easy to understand for rural users. Return ONLY the JSON object.`;
+
+        if (GEMINI_API_KEY === "YOUR_API_KEY_HERE" || GEMINI_API_KEY.trim() === "") {
+            throw new Error("API Key Missing! Please add your Gemini API Key at the top of app.js.");
+        }
+
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                contents: [{ parts: [{ text: prompt }] }]
+            })
+        });
+
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error?.message || "Failed to fetch from Gemini API");
+
+        const aiText = data.candidates[0].content.parts[0].text;
+
+        // Parse the JSON block from text
+        const jsonMatch = aiText.match(/\{[\s\S]*\}/);
+        let parsedData;
+        if (jsonMatch) {
+            parsedData = JSON.parse(jsonMatch[0]);
+        } else {
+            parsedData = {
+                remedy: aiText,
+                ayurvedic: "No specific Ayurvedic solution found.",
+                voiceResponse: aiText
+            };
+        }
+
+        displayAndSpeakResult(parsedData);
+    } catch (error) {
+        console.error("AI Analysis Error:", error);
+        resIssue.innerText = "Error analyzing symptoms";
+        resRemedy.innerText = error.message;
+        speak({
+            en: "Sorry, there was an error processing your request.",
+            hi: "क्षमा करें, आपके अनुरोध को प्रोसेस करने में कोई त्रुटि हुई।",
+            gu: "માફ કરશો, તમારી વિનંતી પર પ્રક્રિયા કરવામાં ભૂલ હતી."
+        });
     }
 }
 
