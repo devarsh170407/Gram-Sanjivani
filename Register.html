@@ -369,7 +369,38 @@
                                 required>
                         </div>
                         <div class="form-group">
-                            <label for="password" data-en="Password" data-hi="पासवर्ड">Password</label>
+                            <label for="age" data-en="Age" data-hi="आयु" data-gu="ઉંમર">Age</label>
+                            <input type="number" id="age" class="form-control" placeholder="Age" required min="1"
+                                max="120">
+                        </div>
+                        <div class="form-group">
+                            <label for="gender" data-en="Gender" data-hi="लिंग" data-gu="જાતિ">Gender</label>
+                            <select id="gender" class="form-control" required
+                                style="background: #0a0a0a; color: var(--white);">
+                                <option value="" disabled selected data-en="Select Gender" data-hi="लिंग चुनें"
+                                    data-gu="જાતિ પસંદ કરો">Select Gender</option>
+                                <option value="Male" data-en="Male" data-hi="पुरुष" data-gu="પુરુષ">Male</option>
+                                <option value="Female" data-en="Female" data-hi="महिला" data-gu="સ્ત્રી">Female</option>
+                                <option value="Other" data-en="Other" data-hi="अन्य" data-gu="અન્ય">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="conditions" data-en="Chronic Conditions" data-hi="पुरानी बीमारियाँ"
+                                data-gu="ક્રોનિક રોગો">Chronic Conditions</label>
+                            <select id="conditions" class="form-control" required
+                                style="background: #0a0a0a; color: var(--white);">
+                                <option value="None" data-en="None" data-hi="कोई नहीं" data-gu="કોઈ નહી">None</option>
+                                <option value="Diabetes" data-en="Diabetes" data-hi="मधुमेह" data-gu="ડાયાબિટીસ">
+                                    Diabetes</option>
+                                <option value="BP" data-en="Blood Pressure (BP)" data-hi="रक्तचाप (BP)"
+                                    data-gu="બ્લડ પ્રેશર (BP)">Blood Pressure (BP)</option>
+                                <option value="Both" data-en="Both (Diabetes & BP)" data-hi="दोनों"
+                                    data-gu="બંને (ડાયાબિટીસ અને BP)">Both (Diabetes & BP)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="password" data-en="Password" data-hi="पासवर्ड"
+                                data-gu="પાસવર્ડ">Password</label>
                             <div class="password-wrapper">
                                 <input type="password" id="password" class="form-control" placeholder="Create password"
                                     required>
@@ -477,6 +508,9 @@
             const email = document.getElementById('email-phone').value;
             const password = document.getElementById('password').value;
             const confirmPassword = document.getElementById('confirm-password').value;
+            const age = document.getElementById('age').value;
+            const gender = document.getElementById('gender').value;
+            const conditions = document.getElementById('conditions').value;
             const submitBtn = signupFormEl.querySelector('button[type="submit"]');
 
             if (password !== confirmPassword) {
@@ -489,18 +523,55 @@
             submitBtn.disabled = true;
 
             try {
+                // Generate safe remedies based on conditions
+                let remedyEn = "Stay hydrated, exercise regularly, and eat a balanced diet.";
+                let remedyHi = "हाइड्रेटेड रहें, नियमित व्यायाम करें, और संतुलित आहार लें।";
+                let remedyGu = "હાઈડ્રેટેડ રહો, નિયમિત કસરત કરો અને સંતુલિત આહાર લો.";
+
+                if (conditions === 'Diabetes') {
+                    remedyEn = "Monitor blood sugar daily, avoid sugary foods, and eat high-fiber meals.";
+                    remedyHi = "रोजाना ब्लड शुगर चेक करें, मीठे से बचें और हाई-फाइबर खाना खाएं।";
+                    remedyGu = "દરરોજ બ્લડ સુગર તપાસો, ગળ્યા ખોરાક ટાળો અને ઉચ્ચ ફાઇબર વાળો ખોરાક લો.";
+                } else if (conditions === 'BP') {
+                    remedyEn = "Reduce salt intake, practice yoga/meditation, and take regular walks.";
+                    remedyHi = "नमक कम खाएं, योग/ध्यान करें, और नियमित टहलें।";
+                    remedyGu = "મીઠું ઓછું ખાઓ, યોગ/ધ્યાન કરો અને નિયમિત ચાલો.";
+                } else if (conditions === 'Both') {
+                    remedyEn = "Strictly monitor sugar and BP, avoid salt/sugar, eat greens, and do light cardio.";
+                    remedyHi = "शुगर और बीपी पर नजर रखें, नमक/चीनी से बचें, और हल्का व्यायाम करें।";
+                    remedyGu = "સુગર અને બીપીનું ધ્યાન રાખો, મીઠું/ખાંડ ટાળો, લીલા શાકભાજી ખાઓ અને હળવી કસરત કરો.";
+                }
+
+                const personalizedRemedies = { en: remedyEn, hi: remedyHi, gu: remedyGu };
+
                 const userCredential = await createUserWithEmailAndPassword(auth, email, password);
                 const user = userCredential.user;
 
                 // Save user profile details to Firestore
                 await setDoc(doc(db, "users", user.uid), {
-                    fullname: fullname,
-                    email: email,
+                    fullname,
+                    email,
+                    age,
+                    gender,
+                    conditions,
+                    personalizedRemedies,
                     role: 'patient',
                     createdAt: new Date()
                 });
 
-                alert("Account Created successfully!");
+                // Display remedies in the currently selected language
+                let currentLang = document.getElementById('langToggle').innerText.includes('English') ? 'hi' :
+                    document.getElementById('langToggle').innerText.includes('ગુજરાતી') ? 'gu' : 'en';
+                // Note: handling default as English if UI shows 'हिंदी' button
+                if (document.getElementById('langToggle').innerText === 'हिंदी') {
+                    currentLang = 'en';
+                } else if (document.getElementById('langToggle').innerText === 'ગુજરાતી') {
+                    currentLang = 'hi';
+                } else if (document.getElementById('langToggle').innerText === 'English') {
+                    currentLang = 'gu';
+                }
+
+                alert(`Account created successfully!\n\nPersonalized Remedy:\n${personalizedRemedies[currentLang]}`);
                 window.location.href = 'index.html';
             } catch (error) {
                 alert("Signup Failed: " + error.message);
@@ -508,6 +579,63 @@
                 submitBtn.innerText = originalText;
                 submitBtn.disabled = false;
             }
+        });
+
+        // 1. Language Toggle Logic for Register.html
+        const langToggle = document.getElementById('langToggle');
+        let currentLang = 'en';
+
+        const gujaratiDict = {
+            "Home": "મુખ્ય પૃષ્ઠ",
+            "About": "અમારા વિશે",
+            "Features": "સુવિધાઓ",
+            "Login/Register": "લોગિન/રજીસ્ટર",
+            "Contact": "સંપર્ક કરો",
+            "Your Health, Our Priority": "તમારું સ્વાસ્થ્ય, અમારી પ્રાથમિકતા",
+            "Join MediCare today and experience healthcare like never before. Our platform connects you with the best services.": "આજે જ MediCare સાથે જોડાઓ અને પહેલાં ક્યારેય ન અનુભવી હોય તેવી આરોગ્ય સંભાળનો અનુભવ કરો.",
+            "Login": "લોગિન",
+            "Email / Phone Number": "ઈમેલ / ફોન નંબર",
+            "Password": "પાસવર્ડ",
+            "Forgot Password?": "પાસવર્ડ ભૂલી ગયા છો?",
+            "Don't have an account?": "શું ખાતું નથી?",
+            "Sign Up": "સાઇન અપ",
+            "Create Account": "ખાતું બનાવો",
+            "Full Name": "પૂરું નામ",
+            "Confirm Password": "પાસવર્ડ કન્ફર્મ કરો",
+            "Already have an account?": "શું પહેલેથી જ ખાતું છે?",
+            "All rights reserved.": "બધા હકો અમારી પાસે રાખેલા છે.",
+            "Sign Up": "સાઇન અપ કરે"
+        };
+
+        // Pre-fill missing data-gu
+        document.querySelectorAll('[data-en]').forEach(el => {
+            if (!el.hasAttribute('data-gu')) {
+                const enText = el.getAttribute('data-en');
+                el.setAttribute('data-gu', gujaratiDict[enText] || enText);
+            }
+        });
+
+        langToggle.addEventListener('click', () => {
+            if (currentLang === 'en') {
+                currentLang = 'hi';
+                langToggle.innerText = 'ગુજરાતી';
+            } else if (currentLang === 'hi') {
+                currentLang = 'gu';
+                langToggle.innerText = 'English';
+            } else {
+                currentLang = 'en';
+                langToggle.innerText = 'हिंदी';
+            }
+
+            document.querySelectorAll('[data-en]').forEach(el => {
+                const translation = el.getAttribute(`data-${currentLang}`);
+                if (translation) {
+                    el.innerText = translation;
+                } else if (currentLang === 'gu') {
+                    // Fallback to english if missing gu
+                    el.innerText = el.getAttribute('data-en') || el.innerText;
+                }
+            });
         });
     </script>
 </body>

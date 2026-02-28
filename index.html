@@ -469,11 +469,11 @@
         <nav class="container">
             <a href="#" class="logo">Gram Sanjivani</a>
             <ul class="nav-links">
-                <li><a href="#home" data-en="Home" data-hi="मुख्य पृष्ठ">Home</a></li>
-                <li><a href="#about" data-en="About" data-hi="हमारे बारे में">About</a></li>
-                <li><a href="#features" data-en="Features" data-hi="विशेषताएं">Features</a></li>
-                <li><a href="Register.html" data-en="Register" data-hi="पंजीकरण">Register</a></li>
-                <li><a href="#contact" data-en="Contact" data-hi="संपर्क">Contact</a></li>
+                <li><a href="#home" data-en="Home" data-hi="मुख्य पृष्ठ" data-gu="મુખ્ય પૃષ્ઠ">Home</a></li>
+                <li><a href="#about" data-en="About" data-hi="हमारे बारे में" data-gu="અમારા વિશે">About</a></li>
+                <li><a href="#features" data-en="Features" data-hi="विशेषताएं" data-gu="સુવિધાઓ">Features</a></li>
+                <li><a href="Register.html" data-en="Register" data-hi="पंजीकरण" data-gu="નોંધણી કરો">Register</a></li>
+                <li><a href="#contact" data-en="Contact" data-hi="संपर्क" data-gu="સંપર્ક કરો">Contact</a></li>
                 <li><button id="langToggle" class="lang-btn">हिंदी</button></li>
             </ul>
         </nav>
@@ -645,23 +645,60 @@
         import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js";
         import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
 
-        // 1. Language Toggle Logic
+        // 1. Language Toggle Logic with Gujarati Dynamic Mapping
         const langToggle = document.getElementById('langToggle');
         let currentLang = 'en';
 
+        const gujaratiDict = {
+            "Home": "મુખ્ય પૃષ્ઠ",
+            "About": "અમારા વિશે",
+            "Features": "સુવિધાઓ",
+            "Register": "નોંધણી કરો",
+            "Contact": "સંપર્ક કરો",
+            "Welcome to Gram Sanjivani": "ગ્રામ સંજીવનીમાં આપનું સ્વાગત છે",
+            "Emergency": "કટોકટી",
+            "About Us": "અમારા વિશે",
+            "What Our Software Does": "અમારું સોફ્ટવેર શું કરે છે",
+            "Contact Us": "સંપર્ક કરો",
+            "Send Message": "સંદેશ મોકલો",
+            "Get in Touch": "સંપર્કમાં રહો"
+        };
+
+        // Pre-fill missing data-gu
+        document.querySelectorAll('[data-en]').forEach(el => {
+            if (!el.hasAttribute('data-gu')) {
+                const enText = el.getAttribute('data-en');
+                el.setAttribute('data-gu', gujaratiDict[enText] || enText);
+            }
+        });
+
         langToggle.addEventListener('click', () => {
-            currentLang = currentLang === 'en' ? 'hi' : 'en';
-            langToggle.innerText = currentLang === 'en' ? 'हिंदी' : 'English';
+            if (currentLang === 'en') {
+                currentLang = 'hi';
+                langToggle.innerText = 'ગુજરાતી';
+            } else if (currentLang === 'hi') {
+                currentLang = 'gu';
+                langToggle.innerText = 'English';
+            } else {
+                currentLang = 'en';
+                langToggle.innerText = 'हिंदी';
+            }
 
             document.querySelectorAll('[data-en]').forEach(el => {
-                el.innerText = el.getAttribute(`data-${currentLang}`);
+                const translation = el.getAttribute(`data-${currentLang}`);
+                if (translation) {
+                    el.innerText = translation;
+                } else if (currentLang === 'gu') {
+                    // Fallback to english if missing gu
+                    el.innerText = el.getAttribute('data-en') || el.innerText;
+                }
             });
 
             document.querySelectorAll('input, textarea').forEach(el => {
-                if (el.placeholder === "Your Name" || el.placeholder === "आपका नाम")
-                    el.placeholder = currentLang === 'en' ? "Your Name" : "आपका नाम";
-                if (el.placeholder === "Your Message" || el.placeholder === "आपका संदेश")
-                    el.placeholder = currentLang === 'en' ? "Your Message" : "आपका संदेश";
+                if (el.placeholder === "Your Name" || el.placeholder === "आपका नाम" || el.placeholder === "તમારું નામ")
+                    el.placeholder = currentLang === 'en' ? "Your Name" : currentLang === 'hi' ? "आपका नाम" : "તમારું નામ";
+                if (el.placeholder === "Your Message" || el.placeholder === "आपका संदेश" || el.placeholder === "તમારો સંદેશ")
+                    el.placeholder = currentLang === 'en' ? "Your Message" : currentLang === 'hi' ? "आपका संदेश" : "તમારો સંદેશ";
             });
         });
 
