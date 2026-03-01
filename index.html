@@ -53,6 +53,27 @@
                 });
             }
         });
+
+        // Sticky Header Logic
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // 2. Emergency Pop-up Logic
+        const modal = document.getElementById("emergencyModal");
+        const btn = document.getElementById("emergencyTrigger");
+        const span = document.getElementById("closeModal");
+
+        btn.onclick = function () { modal.style.display = "flex"; }
+        span.onclick = function () { modal.style.display = "none"; }
+        window.onclick = function (event) {
+            if (event.target == modal) { modal.style.display = "none"; }
+        }
     </script>
 
     <style>
@@ -881,67 +902,67 @@
             window.onclick = function (event) {
                 if (event.target == modal) { modal.style.display = "none"; }
             }
+        });
 
-            // 3. Login Persistence & Dynamic Button Injection
-            onAuthStateChanged(auth, async (userAuth) => {
-                const heroContent = document.querySelector('.hero-content');
-                const emergencyBtn = document.getElementById('emergencyTrigger');
+        // 3. Login Persistence & Dynamic Button Injection
+        onAuthStateChanged(auth, async (userAuth) => {
+            const heroContent = document.querySelector('.hero-content');
+            const emergencyBtn = document.getElementById('emergencyTrigger');
 
-                if (userAuth) {
-                    // Fetch user profile from Firestore
-                    const userDoc = await getDoc(doc(db, "users", userAuth.uid));
-                    let userData = { role: 'patient' };
-                    if (userDoc.exists()) {
-                        userData = userDoc.data();
-                    }
+            if (userAuth) {
+                // Fetch user profile from Firestore
+                const userDoc = await getDoc(doc(db, "users", userAuth.uid));
+                let userData = { role: 'patient' };
+                if (userDoc.exists()) {
+                    userData = userDoc.data();
+                }
 
-                    // Create a container for buttons
-                    const btnContainer = document.createElement('div');
-                    btnContainer.className = 'hero-btn-container';
+                // Create a container for buttons
+                const btnContainer = document.createElement('div');
+                btnContainer.className = 'hero-btn-container';
 
-                    let prefL = localStorage.getItem('preferredLang') || 'en';
-                    let sahayakText = 'Sanjivani AI Sahayak';
-                    if (prefL === 'hi') sahayakText = 'संजीवनी एआई सहायक';
-                    else if (prefL === 'gu') sahayakText = 'સંજીવની એઆઈ સહાયક';
+                let prefL = localStorage.getItem('preferredLang') || 'en';
+                let sahayakText = 'Sanjivani AI Sahayak';
+                if (prefL === 'hi') sahayakText = 'संजीवनी एआई सहायक';
+                else if (prefL === 'gu') sahayakText = 'સંજીવની એઆઈ સહાયક';
 
-                    // Voice to Voice Button
-                    const voiceBtn = document.createElement('a');
-                    voiceBtn.href = 'voice_solution.html';
-                    voiceBtn.className = 'btn hero-secondary-btn';
-                    voiceBtn.innerHTML = `<i class="fas fa-microphone"></i> <span class="sanjivani-ai-sahayak notranslate">${sahayakText}</span>`;
+                // Voice to Voice Button
+                const voiceBtn = document.createElement('a');
+                voiceBtn.href = 'voice_solution.html';
+                voiceBtn.className = 'btn hero-secondary-btn';
+                voiceBtn.innerHTML = `<i class="fas fa-microphone"></i> <span class="sanjivani-ai-sahayak notranslate">${sahayakText}</span>`;
 
-                    // Check-up Button
-                    const checkBtn = document.createElement('a');
-                    checkBtn.href = 'check_up.html';
-                    checkBtn.className = 'btn hero-secondary-btn';
-                    checkBtn.innerHTML = '<i class="fas fa-heartbeat"></i> Check-up';
-                    checkBtn.setAttribute('data-en', 'Check-up');
-                    checkBtn.setAttribute('data-hi', 'जाँच केंद्र');
+                // Check-up Button
+                const checkBtn = document.createElement('a');
+                checkBtn.href = 'check_up.html';
+                checkBtn.className = 'btn hero-secondary-btn';
+                checkBtn.innerHTML = '<i class="fas fa-heartbeat"></i> Check-up';
+                checkBtn.setAttribute('data-en', 'Check-up');
+                checkBtn.setAttribute('data-hi', 'जाँच केंद्र');
 
-                    // Add buttons to container
-                    btnContainer.appendChild(voiceBtn);
-                    btnContainer.appendChild(checkBtn);
+                // Add buttons to container
+                btnContainer.appendChild(voiceBtn);
+                btnContainer.appendChild(checkBtn);
 
-                    // Insert container after the Emergency button
-                    heroContent.appendChild(btnContainer);
+                // Insert container after the Emergency button
+                heroContent.appendChild(btnContainer);
 
-                    // Update Navbar Register link to Dashboard/Logout
-                    const navLinks = document.querySelector('.nav-links');
-                    const registerLi = Array.from(navLinks.children).find(li => li.innerHTML.includes('Register.html'));
-                    if (registerLi) {
-                        registerLi.innerHTML = `<a href="dashboard-${userData.role}.html" style="color:var(--primary-color)">Dashboard</a>`;
+                // Update Navbar Register link to Dashboard/Logout
+                const navLinks = document.querySelector('.nav-links');
+                const registerLi = Array.from(navLinks.children).find(li => li.innerHTML.includes('Register.html'));
+                if (registerLi) {
+                    registerLi.innerHTML = `<a href="dashboard-${userData.role}.html" style="color:var(--primary-color)">Dashboard</a>`;
 
-                        // Add Logout option
-                        const logoutLi = document.createElement('li');
-                        logoutLi.innerHTML = '<a href="#" id="logout-link">Logout</a>';
-                        navLinks.insertBefore(logoutLi, navLinks.lastElementChild);
+                    // Add Logout option
+                    const logoutLi = document.createElement('li');
+                    logoutLi.innerHTML = '<a href="#" id="logout-link">Logout</a>';
+                    navLinks.insertBefore(logoutLi, navLinks.lastElementChild);
 
-                        document.getElementById('logout-link').onclick = async function (e) {
-                            e.preventDefault();
-                            await signOut(auth);
-                            window.location.reload();
-                        };
-                    }
+                    document.getElementById('logout-link').onclick = async function (e) {
+                        e.preventDefault();
+                        await signOut(auth);
+                        window.location.reload();
+                    };
                 }
             }
         });
