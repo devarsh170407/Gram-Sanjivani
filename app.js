@@ -130,9 +130,22 @@ Keep the answers concise and easy to understand for rural users. Return ONLY the
 
 function displayAndSpeakResult(data) {
     resultSection.classList.remove('hidden');
-    resIssue.innerHTML = `<i class="fas fa-comment-medical"></i> Voice Analysis Result`;
-    resRemedy.innerHTML = `<strong>Home Remedy:</strong> ${data.remedy}<br><br><strong>Ayurvedic Solution:</strong> ${data.ayurvedic}`;
-    resWarning.innerText = "Note: If symptoms persist, please consult a doctor.";
+    resIssue.innerHTML = `<i class="fas fa-comment-medical" style="color: #ff4d4f; font-size: 1.5rem; margin-right: 10px;"></i> 
+                          <span style="font-size: 1.4rem; font-weight: 700; color: var(--primary-color);">Voice Analysis Result</span>`;
+
+    resRemedy.innerHTML = `<div style="background: rgba(255, 255, 255, 0.05); padding: 15px; border-radius: 10px; border-left: 4px solid var(--primary-color); margin-bottom: 15px;">
+                              <strong style="color: #fff; font-size: 1.1rem; display: block; margin-bottom: 5px;"><i class="fas fa-leaf" style="color: #4caf50;"></i> Home Remedy</strong>
+                              <span style="color: var(--text-color);">${data.remedy}</span>
+                           </div>
+                           <div style="background: rgba(255, 255, 255, 0.05); padding: 15px; border-radius: 10px; border-left: 4px solid #2db7f5; margin-bottom: 15px;">
+                              <strong style="color: #fff; font-size: 1.1rem; display: block; margin-bottom: 5px;"><i class="fas fa-mortar-pestle" style="color: #2db7f5;"></i> Ayurvedic Solution</strong>
+                              <span style="color: var(--text-color);">${data.ayurvedic}</span>
+                           </div>`;
+
+    resWarning.innerHTML = `<div style="background: rgba(255, 77, 79, 0.1); padding: 15px; border-radius: 10px; border-left: 4px solid #ff4d4f; margin-bottom: 15px;">
+                                <strong style="color: #ff4d4f; font-size: 1.1rem; display: block; margin-bottom: 5px;"><i class="fas fa-exclamation-triangle"></i> Important Note</strong>
+                                <span style="color: #ffcccc;">If symptoms persist, please consult a doctor.</span>
+                             </div>`;
     speak(data.voiceResponse);
 
     if (auth.currentUser) {
@@ -333,13 +346,26 @@ Keep the answers concise and easy to understand for rural users. Return ONLY the
             }
 
             // 3. Update the UI with the "Answer"
-            resIssue.innerHTML = `<i class="fas fa-search-medical"></i> Analysis Result: ${analysis.issue}`;
-            resRemedy.innerHTML = `<strong>Home Remedy:</strong><br>${analysis.remedy}`;
+            resIssue.innerHTML = `<i class="fas fa-heartbeat" style="color: #ff4d4f; font-size: 1.5rem; margin-right: 10px;"></i> 
+                                  <span style="font-size: 1.4rem; font-weight: 700; color: var(--primary-color);">Analysis Result: ${analysis.issue}</span>`;
+
+            resRemedy.innerHTML = `<div style="background: rgba(255, 255, 255, 0.05); padding: 15px; border-radius: 10px; border-left: 4px solid var(--primary-color); margin-bottom: 15px;">
+                                      <strong style="color: #fff; font-size: 1.1rem; display: block; margin-bottom: 5px;"><i class="fas fa-leaf" style="color: #4caf50;"></i> Home Remedy</strong>
+                                      <span style="color: var(--text-color);">${analysis.remedy}</span>
+                                   </div>`;
 
             const resOintment = document.getElementById('res-ointment');
-            if (resOintment) resOintment.innerHTML = `<strong>Suggested Ointment:</strong><br>${analysis.ointment}`;
+            if (resOintment) {
+                resOintment.innerHTML = `<div style="background: rgba(255, 255, 255, 0.05); padding: 15px; border-radius: 10px; border-left: 4px solid #2db7f5; margin-bottom: 15px;">
+                                            <strong style="color: #fff; font-size: 1.1rem; display: block; margin-bottom: 5px;"><i class="fas fa-prescription-bottle-alt" style="color: #2db7f5;"></i> Suggested Ointment</strong>
+                                            <span style="color: var(--text-color);">${analysis.ointment}</span>
+                                         </div>`;
+            }
 
-            resWarning.innerText = `Note: ${analysis.warning}`;
+            resWarning.innerHTML = `<div style="background: rgba(255, 77, 79, 0.1); padding: 15px; border-radius: 10px; border-left: 4px solid #ff4d4f; margin-bottom: 15px;">
+                                        <strong style="color: #ff4d4f; font-size: 1.1rem; display: block; margin-bottom: 5px;"><i class="fas fa-exclamation-triangle"></i> Important Note</strong>
+                                        <span style="color: #ffcccc;">${analysis.warning}</span>
+                                     </div>`;
 
             // 4. Voice Feedback (Optional: Speaks the result to the user)
             let speechLang = 'en';
