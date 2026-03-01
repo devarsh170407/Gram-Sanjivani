@@ -139,11 +139,77 @@
             border: 1px solid var(--primary-color);
             padding: 5px 15px;
             border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
 
         .lang-btn:hover {
             background: var(--primary-color);
             color: #000;
+        }
+
+        /* Language Dropdown Styles */
+        .lang-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: rgba(26, 26, 26, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 10px;
+            min-width: 140px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            overflow: hidden;
+            padding: 5px 0;
+            margin-top: 10px;
+        }
+
+        .dropdown-content a {
+            color: var(--text-color);
+            padding: 12px 20px;
+            text-decoration: none;
+            display: block;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            text-align: right;
+            cursor: pointer;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .dropdown-content a:last-child {
+            border-bottom: none;
+        }
+
+        .dropdown-content a:hover {
+            background-color: rgba(212, 175, 55, 0.2);
+            color: var(--primary-color);
+            padding-right: 25px;
+        }
+
+        .lang-dropdown:hover .dropdown-content {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* Hero Section Styles */
@@ -567,7 +633,17 @@
                 <li><a href="#features" data-en="Features" data-hi="विशेषताएं" data-gu="સુવિધાઓ">Features</a></li>
                 <li><a href="Register.html" data-en="Register" data-hi="पंजीकरण" data-gu="નોંધણી કરો">Register</a></li>
                 <li><a href="#contact" data-en="Contact" data-hi="संपर्क" data-gu="સંપર્ક કરો">Contact</a></li>
-                <li><button id="langToggle" class="lang-btn">हिंदी</button></li>
+                <li class="lang-dropdown">
+                    <button class="lang-btn">
+                        <i class="fas fa-globe"></i> <span id="langDisplay">English</span> <i
+                            class="fas fa-chevron-down" style="font-size: 0.8rem; margin-left: 2px;"></i>
+                    </button>
+                    <div class="dropdown-content">
+                        <a onclick="setLanguage('en')">English</a>
+                        <a onclick="setLanguage('hi')">हिंदी</a>
+                        <a onclick="setLanguage('gu')">ગુજરાતી</a>
+                    </div>
+                </li>
             </ul>
         </nav>
     </header>
@@ -746,15 +822,24 @@
             });
         }
 
-        // 1. Language Toggle Logic utilizing Google Translate Widget
-        const langToggle = document.getElementById('langToggle');
+        // Dropdown Language Selection Logic
+        window.setLanguage = function (langCode) {
+            localStorage.setItem('preferredLang', langCode);
+            window.location.reload();
+        };
+
         let currentLang = localStorage.getItem('preferredLang') || 'en';
 
-        const getLangName = (l) => {
-            if (l === 'hi') return 'ગુજરાતી';
-            if (l === 'gu') return 'English';
-            return 'हिंदी';
+        const getLangDisplayName = (l) => {
+            if (l === 'hi') return 'हिंदी';
+            if (l === 'gu') return 'ગુજરાતી';
+            return 'English';
         };
+
+        const langDisplay = document.getElementById('langDisplay');
+        if (langDisplay) {
+            langDisplay.innerText = getLangDisplayName(currentLang);
+        }
 
         const updateTranslateWidget = (langCode) => {
             const select = document.querySelector('.goog-te-combo');
@@ -764,130 +849,78 @@
             }
         };
 
-        if (langToggle) {
-            langToggle.innerText = getLangName(currentLang);
+        window.addEventListener('load', () => {
+            // 2. Emergency Pop-up Logic
+            const modal = document.getElementById("emergencyModal");
+            const btn = document.getElementById("emergencyTrigger");
+            const span = document.getElementById("closeModal");
 
-            // Auto translate on load
-            window.addEventListener('load', () => {
-                setTimeout(() => {
-                    const logos = document.querySelectorAll('.logo');
-                    logos.forEach(logo => {
-                        if (currentLang === 'hi') logo.innerText = 'ग्राम संजीवनी';
-                        else if (currentLang === 'gu') logo.innerText = 'ગ્રામ સંજીવની';
-                        else logo.innerText = 'Gram Sanjivani';
-                    });
+            btn.onclick = function () { modal.style.display = "flex"; }
+            span.onclick = function () { modal.style.display = "none"; }
+            window.onclick = function (event) {
+                if (event.target == modal) { modal.style.display = "none"; }
+            }
 
-                    const sahayaks = document.querySelectorAll('.sanjivani-ai-sahayak');
-                    sahayaks.forEach(el => {
-                        if (currentLang === 'hi') el.innerText = 'संजीवनी एआई सहायक';
-                        else if (currentLang === 'gu') el.innerText = 'સંજીવની એઆઈ સહાયક';
-                        else el.innerText = 'Sanjivani AI Sahayak';
-                    });
+            // 3. Login Persistence & Dynamic Button Injection
+            onAuthStateChanged(auth, async (userAuth) => {
+                const heroContent = document.querySelector('.hero-content');
+                const emergencyBtn = document.getElementById('emergencyTrigger');
 
-                    if (currentLang !== 'en') {
-                        updateTranslateWidget(currentLang);
+                if (userAuth) {
+                    // Fetch user profile from Firestore
+                    const userDoc = await getDoc(doc(db, "users", userAuth.uid));
+                    let userData = { role: 'patient' };
+                    if (userDoc.exists()) {
+                        userData = userDoc.data();
                     }
-                }, 1000); // Allow widget to load
-            });
 
-            langToggle.addEventListener('click', () => {
-                if (currentLang === 'en') {
-                    currentLang = 'hi';
-                } else if (currentLang === 'hi') {
-                    currentLang = 'gu';
-                } else {
-                    currentLang = 'en';
-                }
-                localStorage.setItem('preferredLang', currentLang);
-                langToggle.innerText = getLangName(currentLang);
+                    // Create a container for buttons
+                    const btnContainer = document.createElement('div');
+                    btnContainer.className = 'hero-btn-container';
 
-                const logos = document.querySelectorAll('.logo');
-                logos.forEach(logo => {
-                    if (currentLang === 'hi') logo.innerText = 'ग्राम संजीवनी';
-                    else if (currentLang === 'gu') logo.innerText = 'ગ્રામ સંજીવની';
-                    else logo.innerText = 'Gram Sanjivani';
-                });
+                    let prefL = localStorage.getItem('preferredLang') || 'en';
+                    let sahayakText = 'Sanjivani AI Sahayak';
+                    if (prefL === 'hi') sahayakText = 'संजीवनी एआई सहायक';
+                    else if (prefL === 'gu') sahayakText = 'સંજીવની એઆઈ સહાયક';
 
-                const sahayaks = document.querySelectorAll('.sanjivani-ai-sahayak');
-                sahayaks.forEach(el => {
-                    if (currentLang === 'hi') el.innerText = 'संजीवनी एआई सहायक';
-                    else if (currentLang === 'gu') el.innerText = 'સંજીવની એઆઈ સહાયક';
-                    else el.innerText = 'Sanjivani AI Sahayak';
-                });
+                    // Voice to Voice Button
+                    const voiceBtn = document.createElement('a');
+                    voiceBtn.href = 'voice_solution.html';
+                    voiceBtn.className = 'btn hero-secondary-btn';
+                    voiceBtn.innerHTML = `<i class="fas fa-microphone"></i> <span class="sanjivani-ai-sahayak notranslate">${sahayakText}</span>`;
 
-                updateTranslateWidget(currentLang);
-            });
-        }
-        // 2. Emergency Pop-up Logic
-        const modal = document.getElementById("emergencyModal");
-        const btn = document.getElementById("emergencyTrigger");
-        const span = document.getElementById("closeModal");
+                    // Check-up Button
+                    const checkBtn = document.createElement('a');
+                    checkBtn.href = 'check_up.html';
+                    checkBtn.className = 'btn hero-secondary-btn';
+                    checkBtn.innerHTML = '<i class="fas fa-heartbeat"></i> Check-up';
+                    checkBtn.setAttribute('data-en', 'Check-up');
+                    checkBtn.setAttribute('data-hi', 'जाँच केंद्र');
 
-        btn.onclick = function () { modal.style.display = "flex"; }
-        span.onclick = function () { modal.style.display = "none"; }
-        window.onclick = function (event) {
-            if (event.target == modal) { modal.style.display = "none"; }
-        }
+                    // Add buttons to container
+                    btnContainer.appendChild(voiceBtn);
+                    btnContainer.appendChild(checkBtn);
 
-        // 3. Login Persistence & Dynamic Button Injection
-        onAuthStateChanged(auth, async (userAuth) => {
-            const heroContent = document.querySelector('.hero-content');
-            const emergencyBtn = document.getElementById('emergencyTrigger');
+                    // Insert container after the Emergency button
+                    heroContent.appendChild(btnContainer);
 
-            if (userAuth) {
-                // Fetch user profile from Firestore
-                const userDoc = await getDoc(doc(db, "users", userAuth.uid));
-                let userData = { role: 'patient' };
-                if (userDoc.exists()) {
-                    userData = userDoc.data();
-                }
+                    // Update Navbar Register link to Dashboard/Logout
+                    const navLinks = document.querySelector('.nav-links');
+                    const registerLi = Array.from(navLinks.children).find(li => li.innerHTML.includes('Register.html'));
+                    if (registerLi) {
+                        registerLi.innerHTML = `<a href="dashboard-${userData.role}.html" style="color:var(--primary-color)">Dashboard</a>`;
 
-                // Create a container for buttons
-                const btnContainer = document.createElement('div');
-                btnContainer.className = 'hero-btn-container';
+                        // Add Logout option
+                        const logoutLi = document.createElement('li');
+                        logoutLi.innerHTML = '<a href="#" id="logout-link">Logout</a>';
+                        navLinks.insertBefore(logoutLi, navLinks.lastElementChild);
 
-                let prefL = localStorage.getItem('preferredLang') || 'en';
-                let sahayakText = 'Sanjivani AI Sahayak';
-                if (prefL === 'hi') sahayakText = 'संजीवनी एआई सहायक';
-                else if (prefL === 'gu') sahayakText = 'સંજીવની એઆઈ સહાયક';
-
-                // Voice to Voice Button
-                const voiceBtn = document.createElement('a');
-                voiceBtn.href = 'voice_solution.html';
-                voiceBtn.className = 'btn hero-secondary-btn';
-                voiceBtn.innerHTML = `<i class="fas fa-microphone"></i> <span class="sanjivani-ai-sahayak notranslate">${sahayakText}</span>`;
-
-                // Check-up Button
-                const checkBtn = document.createElement('a');
-                checkBtn.href = 'check_up.html';
-                checkBtn.className = 'btn hero-secondary-btn';
-                checkBtn.innerHTML = '<i class="fas fa-heartbeat"></i> Check-up';
-                checkBtn.setAttribute('data-en', 'Check-up');
-                checkBtn.setAttribute('data-hi', 'जाँच केंद्र');
-
-                // Add buttons to container
-                btnContainer.appendChild(voiceBtn);
-                btnContainer.appendChild(checkBtn);
-
-                // Insert container after the Emergency button
-                heroContent.appendChild(btnContainer);
-
-                // Update Navbar Register link to Dashboard/Logout
-                const navLinks = document.querySelector('.nav-links');
-                const registerLi = Array.from(navLinks.children).find(li => li.innerHTML.includes('Register.html'));
-                if (registerLi) {
-                    registerLi.innerHTML = `<a href="dashboard-${userData.role}.html" style="color:var(--primary-color)">Dashboard</a>`;
-
-                    // Add Logout option
-                    const logoutLi = document.createElement('li');
-                    logoutLi.innerHTML = '<a href="#" id="logout-link">Logout</a>';
-                    navLinks.insertBefore(logoutLi, navLinks.lastElementChild);
-
-                    document.getElementById('logout-link').onclick = async function (e) {
-                        e.preventDefault();
-                        await signOut(auth);
-                        window.location.reload();
-                    };
+                        document.getElementById('logout-link').onclick = async function (e) {
+                            e.preventDefault();
+                            await signOut(auth);
+                            window.location.reload();
+                        };
+                    }
                 }
             }
         });

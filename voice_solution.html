@@ -145,11 +145,77 @@
             border: 1px solid var(--primary-color);
             padding: 5px 15px;
             border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
 
         .lang-btn:hover {
             background: var(--primary-color);
             color: #000;
+        }
+
+        /* Language Dropdown Styles */
+        .lang-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: rgba(26, 26, 26, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 10px;
+            min-width: 140px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            overflow: hidden;
+            padding: 5px 0;
+            margin-top: 10px;
+        }
+
+        .dropdown-content a {
+            color: var(--text-color);
+            padding: 12px 20px;
+            text-decoration: none;
+            display: block;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            text-align: right;
+            cursor: pointer;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .dropdown-content a:last-child {
+            border-bottom: none;
+        }
+
+        .dropdown-content a:hover {
+            background-color: rgba(212, 175, 55, 0.2);
+            color: var(--primary-color);
+            padding-right: 25px;
+        }
+
+        .lang-dropdown:hover .dropdown-content {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .hamburger {
@@ -361,7 +427,17 @@
             <ul class="nav-links" id="navLinks">
                 <li><button id="request-perms" class="primary-gold-btn">Enable Sensors</button></li>
                 <li><a href="index.html" data-en="Home" data-hi="मुख्य पृष्ठ" data-gu="મુખ્ય પૃષ્ઠ">Home</a></li>
-                <li><button id="langToggle" class="lang-btn">हिंदी</button></li>
+                <li class="lang-dropdown">
+                    <button class="lang-btn">
+                        <i class="fas fa-globe"></i> <span id="langDisplay">English</span> <i
+                            class="fas fa-chevron-down" style="font-size: 0.8rem; margin-left: 2px;"></i>
+                    </button>
+                    <div class="dropdown-content">
+                        <a onclick="setLanguage('en')">English</a>
+                        <a onclick="setLanguage('hi')">हिंदी</a>
+                        <a onclick="setLanguage('gu')">ગુજરાતી</a>
+                    </div>
+                </li>
             </ul>
         </nav>
     </header>
@@ -447,28 +523,21 @@
             }
         });
 
-        // Language Toggle Logic Port for Top Nav
-        const langToggle = document.getElementById('langToggle');
-        if (langToggle) {
-            langToggle.innerText = getLangName(localStorage.getItem('preferredLang') || 'en');
+        // Dropdown Language Selection Logic
+        window.setLanguage = function (langCode) {
+            localStorage.setItem('preferredLang', langCode);
+            window.location.reload();
+        };
+
+        const langDisplay = document.getElementById('langDisplay');
+        if (langDisplay) {
+            langDisplay.innerText = getLangName(localStorage.getItem('preferredLang') || 'en');
         }
 
         function getLangName(langCode) {
             if (langCode === 'hi') return 'हिंदी';
             if (langCode === 'gu') return 'ગુજરાતી';
             return 'English';
-        }
-
-        if (langToggle) {
-            langToggle.addEventListener('click', () => {
-                let l = localStorage.getItem('preferredLang') || 'en';
-                let nextLang = 'en';
-                if (l === 'en') nextLang = 'hi';
-                else if (l === 'hi') nextLang = 'gu';
-
-                localStorage.setItem('preferredLang', nextLang);
-                window.location.reload();
-            });
         }
     </script>
 </body>
