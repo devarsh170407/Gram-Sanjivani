@@ -72,21 +72,119 @@
             min-height: 100vh;
         }
 
-        .navbar {
+        .container {
+            width: 80%;
+            margin: auto;
+            overflow: hidden;
+        }
+
+        /* Header Styles */
+        header {
             background: rgba(0, 0, 0, 0.9);
-            padding: 3rem 2rem 1rem 2rem;
-            /* Increased top padding */
+            padding: 3rem 0 1rem 0;
             border-bottom: 1px solid var(--primary-color);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        header.scrolled {
+            background: rgba(0, 0, 0, 1);
+            padding: 2.5rem 0 0.5rem 0;
+        }
+
+        nav {
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
         .logo {
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             font-weight: bold;
             color: var(--primary-color);
             text-decoration: none;
+            transition: all 0.3s ease;
+            letter-spacing: 1px;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+            text-shadow: 0 0 10px var(--primary-color);
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            align-items: center;
+        }
+
+        .nav-links li {
+            margin-left: 30px;
+        }
+
+        .nav-links a,
+        .lang-btn {
+            text-decoration: none;
+            color: var(--white);
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+            position: relative;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .lang-btn {
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+            padding: 5px 15px;
+            border-radius: 20px;
+        }
+
+        .lang-btn:hover {
+            background: var(--primary-color);
+            color: #000;
+        }
+
+        .hamburger {
+            display: none;
+            color: var(--white);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .hamburger {
+                display: block;
+            }
+
+            .container {
+                width: 90%;
+            }
+
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 70px;
+                left: 0;
+                width: 100%;
+                background: rgba(0, 0, 0, 0.95);
+                padding: 1rem 0;
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .nav-links li {
+                margin: 15px 0;
+                text-align: center;
+            }
         }
 
         .content-area {
@@ -94,6 +192,7 @@
             padding: 2rem;
             max-width: 1000px;
             margin: auto;
+            margin-top: 100px;
             width: 100%;
         }
 
@@ -101,59 +200,61 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 1.5rem;
-            margin: 2rem 0;
+            margin-top: 2rem;
+            margin-bottom: 2rem;
         }
 
-        .action-btn {
-            background: var(--surface-color);
+        .action-btn,
+        .primary-gold-btn {
+            background-color: var(--surface-color);
             border: 1px solid #333;
-            color: var(--white);
-            padding: 2rem 1rem;
-            border-radius: 15px;
+            color: var(--primary-color);
+            padding: 1rem;
+            border-radius: 10px;
             cursor: pointer;
-            transition: all 0.3s ease;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 10px;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
             font-size: 1.1rem;
-        }
-
-        .action-btn i {
-            font-size: 2.5rem;
-            color: var(--primary-color);
-        }
-
-        .action-btn:hover {
-            border-color: var(--primary-color);
-            transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.2);
+            font-weight: 600;
         }
 
         .primary-gold-btn {
             background: var(--gold-gradient);
-            color: black;
+            color: #000;
             border: none;
-            padding: 12px 25px;
-            border-radius: 50px;
-            font-weight: bold;
-            cursor: pointer;
+            display: flex;
+            align-items: center;
+            flex-direction: row;
         }
 
-        .hidden {
-            display: none;
+        .action-btn:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-color);
+            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.2);
+        }
+
+        .action-btn i {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
         }
 
         .profile-card {
             background: var(--surface-color);
-            border: 1px solid var(--primary-color);
+            border: 1px solid #333;
             padding: 2rem;
             border-radius: 15px;
             margin-top: 2rem;
+            width: 100%;
+            box-sizing: border-box;
         }
 
         video {
             width: 100%;
+            max-width: 100%;
             border-radius: 15px;
             border: 2px solid var(--primary-color);
             margin-top: 1rem;
@@ -191,12 +292,17 @@
         });
     </script>
 
-    <nav class="navbar">
-        <a href="index.html" class="logo notranslate">Gram Sanjivani</a>
-        <div class="nav-links">
-            <button id="request-perms" class="primary-gold-btn">Enable Sensors</button>
-        </div>
-    </nav>
+    <header>
+        <nav class="container">
+            <a href="index.html" class="logo notranslate">Gram Sanjivani</a>
+            <i class="fas fa-bars hamburger" id="hamburgerMenu"></i>
+            <ul class="nav-links" id="navLinks">
+                <li><button id="request-perms" class="primary-gold-btn">Enable Sensors</button></li>
+                <li><a href="index.html" data-en="Home" data-hi="मुख्य पृष्ठ" data-gu="મુખ્ય પૃષ્ઠ">Home</a></li>
+                <li><button id="langToggle" class="lang-btn">हिंदी</button></li>
+            </ul>
+        </nav>
+    </header>
 
     <div id="main-content" class="content-area">
         <h2 style="color: var(--primary-color); text-align: center;">Smart Health Assistant</h2>
@@ -259,6 +365,49 @@
                 }
             }, 1000); // Allow widget to load
         });
+
+        // Hamburger Menu Logic
+        const hamburger = document.getElementById('hamburgerMenu');
+        const navLinks = document.getElementById('navLinks');
+        if (hamburger && navLinks) {
+            hamburger.addEventListener('click', () => {
+                navLinks.classList.toggle('active');
+            });
+        }
+
+        // Sticky Header Logic
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // Language Toggle Logic Port for Top Nav
+        const langToggle = document.getElementById('langToggle');
+        if (langToggle) {
+            langToggle.innerText = getLangName(localStorage.getItem('preferredLang') || 'en');
+        }
+
+        function getLangName(langCode) {
+            if (langCode === 'hi') return 'हिंदी';
+            if (langCode === 'gu') return 'ગુજરાતી';
+            return 'English';
+        }
+
+        if (langToggle) {
+            langToggle.addEventListener('click', () => {
+                let l = localStorage.getItem('preferredLang') || 'en';
+                let nextLang = 'en';
+                if (l === 'en') nextLang = 'hi';
+                else if (l === 'hi') nextLang = 'gu';
+
+                localStorage.setItem('preferredLang', nextLang);
+                window.location.reload();
+            });
+        }
     </script>
 </body>
 
