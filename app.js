@@ -282,50 +282,114 @@ fileInput.onchange = async (e) => {
 
     // 1. Show the result card and a loading message
     resultSection.classList.remove('hidden');
-    resIssue.innerText = "Analyzing Image...";
+    resIssue.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Analyzing Image...`;
     resRemedy.innerText = "Scanning for symptoms and patterns...";
-    resWarning.innerText = "";
+    resWarning.innerText = "Please wait while our AI medical assistant generates a safe response.";
 
-    // 2. Simulate API Delay (Replace this with your fetch('/api/analyze') call)
-    setTimeout(async () => {
-        // Mock Analysis Data based on common skin/health issues
-        const analysis = {
-            issue: "Possible Contact Dermatitis",
-            remedy: "Home Remedy: Apply a cold compress and aloe vera gel. Avoid harsh soaps.",
-            ointment: "Suggested Ointment: Hydrocortisone cream (Consult a doctor before use).",
-            warning: "Note: If swelling increases or you develop a fever, please use the Emergency button immediately."
-        };
+    // Read the file and convert to base64
+    const reader = new FileReader();
+    reader.onloadend = async () => {
+        const base64String = reader.result.split(',')[1];
+        const mimeType = file.type;
 
-        // 3. Update the UI with the "Answer"
-        resIssue.innerHTML = `<i class="fas fa-search-medical"></i> Analysis Result: ${analysis.issue}`;
-        resRemedy.innerText = analysis.remedy;
+        try {
+            let preferredLang = localStorage.getItem('preferredLang') || 'en';
+            let languageInstruction = "English";
+            if (preferredLang === 'hi') languageInstruction = "Hindi (हिंदी)";
+            if (preferredLang === 'gu') languageInstruction = "Gujarati (ગુજરાતી)";
 
-        // Show ointment if your HTML has the element (it was in your previous file)
-        const resOintment = document.getElementById('res-ointment');
-        if (resOintment) resOintment.innerText = analysis.ointment;
+            const prompt = `You are an expert AI medical assistant for the Gram Sanjivani app.
+Analyze this image and identify the probable skin condition, health issue, or injury. 
+Please provide a response IN THE ${languageInstruction} LANGUAGE ONLY.
+Format your response as a valid JSON object with exactly four fields (no markdown formatting):
+1. "issue": A short title of the probable issue discovered.
+2. "remedy": A safe, general home remedy for this issue.
+3. "ointment": A suggested over-the-counter medical ointment or solution. State that they should consult a doctor.
+4. "warning": Any severe symptoms to look out for that would require using the Emergency button.
 
-        resWarning.innerText = analysis.warning;
+Keep the answers concise and easy to understand for rural users. Return ONLY the JSON object.`;
 
-        // 4. Voice Feedback (Optional: Speaks the result to the user)
-        const voiceResponses = {
-            en: `Analysis complete. We detected ${analysis.issue}. ${analysis.remedy}`,
-            hi: `विश्लेषण पूर्ण हुआ। हमने संपर्क डर्मेटाइटिस का पता लगाया है। ठंडी सिकाई और एलोवेरा जेल लगाएं।`,
-            gu: `વિશ્લેષણ પૂર્ણ થયું. અમે સંપર્ક ત્વચાકોપ શોધી કાઢ્યું છે. ઠંડી પટ્ટી અને કુંવારપાઠા નો ગર લગાવો.`
-        };
-        speak(voiceResponses);
+            const response = await fetch('/api/gemini', {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ prompt: prompt, image: base64String, mimeType: mimeType })
+            });
 
-        // Save to Firestore
-        if (auth.currentUser) {
-            try {
-                await addDoc(collection(db, "diagnostics"), {
-                    userId: auth.currentUser.uid,
-                    type: "image_analysis",
-                    result: analysis,
-                    timestamp: new Date()
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || "Failed to fetch from backend");
+            }
+
+            const aiText = data.candidates[0].content.parts[0].text;
+
+            // Parse the JSON block from text
+            const jsonMatch = aiText.match(/\{[\s\S]*\}/);
+            let analysis;
+            if (jsonMatch) {
+                analysis = JSON.parse(jsonMatch[0]);
+            } else {
+                throw new Error("Unable to parse AI response");
+            }
+
+            // 3. Update the UI with the "Answer"
+            resIssue.innerHTML = `<i class="fas fa-search-medical"></i> Analysis Result: ${analysis.issue}`;
+            resRemedy.innerHTML = `<strong>Home Remedy:</strong><br>${analysis.remedy}`;
+
+            const resOintment = document.getElementById('res-ointment');
+            if (resOintment) resOintment.innerHTML = `<strong>Suggested Ointment:</strong><br>${analysis.ointment}`;
+
+            resWarning.innerText = `Note: ${analysis.warning}`;
+
+            // 4. Voice Feedback (Optional: Speaks the result to the user)
+            let speechLang = 'en';
+            if (preferredLang === 'hi') speechLang = 'hi';
+            if (preferredLang === 'gu') speechLang = 'gu';
+
+            const voiceResponses = {
+                en: `Analysis complete. We detected ${analysis.issue}. ${analysis.remedy}`,
+                hi: `विश्लेषण पूर्ण हुआ। हमने ${analysis.issue} का पता लगाया है। ${analysis.remedy}`,
+                gu: `વિશ્લેષણ પૂર્ણ થયું. અમે ${analysis.issue} શોધી કાઢ્યું છે. ${analysis.remedy}`
+            };
+
+            let textToSpeak = voiceResponses[speechLang] || voiceResponses['en'];
+            speak(textToSpeak);
+
+            // Save to Firestore
+            if (auth.currentUser) {
+                try {
+                    await addDoc(collection(db, "diagnostics"), {
+                        userId: auth.currentUser.uid,
+                        type: "image_analysis",
+                        result: analysis,
+                        timestamp: new Date()
+                    });
+                } catch (e) {
+                    console.error("Error saving diagnostic:", e);
+                }
+            }
+        } catch (error) {
+            console.error("Image Analysis Error:", error);
+            resIssue.innerText = "Error analyzing image";
+
+            let errorMessage = error.message;
+
+            if (errorMessage.includes("Quota") || errorMessage.includes("429") || errorMessage.includes("rate limit")) {
+                resRemedy.innerText = "The AI service is receiving too many requests. Please wait 1 minute and try again.";
+                speak({
+                    en: "The AI assistant is currently busy. Please wait a moment and try again.",
+                    hi: "AI सहायक अभी व्यस्त है। कृपया कुछ देर प्रतीक्षा करें और फिर प्रयास करें।",
+                    gu: "AI સહાયક અત્યારે વ્યસ્ત છે. કૃપા કરીને થોડીવાર રાહ જુઓ અને ફરી પ્રયાસ કરો."
                 });
-            } catch (e) {
-                console.error("Error saving diagnostic:", e);
+            } else {
+                resRemedy.innerText = errorMessage;
+                speak({
+                    en: "Sorry, there was an error processing your image.",
+                    hi: "क्षमा करें, आपकी छवि को प्रोसेस करने में कोई त्रुटि हुई।",
+                    gu: "માફ કરશો, તમારી છબી પર પ્રક્રિયા કરવામાં ભૂલ હતી."
+                });
             }
         }
-    }, 2500);
+    };
+    reader.readAsDataURL(file);
 };

@@ -4,7 +4,7 @@ export default async function handler(req, res) {
     }
 
     try {
-        const { prompt } = req.body;
+        const { prompt, image, mimeType } = req.body;
 
         if (!prompt) {
             return res.status(400).json({ error: 'Prompt is required' });
@@ -17,12 +17,20 @@ export default async function handler(req, res) {
             return res.status(500).json({ error: 'GEMINI_API_KEY environment variable is missing on Vercel' });
         }
 
+        let contents = [{ parts: [{ text: prompt }] }];
+        if (image && mimeType) {
+            contents[0].parts.push({
+                inline_data: {
+                    mime_type: mimeType,
+                    data: image
+                }
+            });
+        }
+
         const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                contents: [{ parts: [{ text: prompt }] }]
-            })
+            body: JSON.stringify({ contents: contents })
         });
 
         const data = await response.json();
