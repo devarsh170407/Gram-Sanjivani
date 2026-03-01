@@ -559,7 +559,7 @@
 <body>
     <header>
         <nav class="container">
-            <a href="#" class="logo">Gram Sanjivani</a>
+            <a href="#" class="logo notranslate">Gram Sanjivani</a>
             <i class="fas fa-bars hamburger" id="hamburgerMenu"></i>
             <ul class="nav-links" id="navLinks">
                 <li><a href="#home" data-en="Home" data-hi="मुख्य पृष्ठ" data-gu="મુખ્ય પૃષ્ઠ">Home</a></li>
@@ -771,6 +771,12 @@
             // Auto translate on load
             window.addEventListener('load', () => {
                 setTimeout(() => {
+                    const logos = document.querySelectorAll('.logo');
+                    logos.forEach(logo => {
+                        if (currentLang === 'hi') logo.innerText = 'ग्राम संजीवनी';
+                        else if (currentLang === 'gu') logo.innerText = 'ગ્રામ સંજીવની';
+                        else logo.innerText = 'Gram Sanjivani';
+                    });
                     if (currentLang !== 'en') {
                         updateTranslateWidget(currentLang);
                     }
@@ -787,6 +793,13 @@
                 }
                 localStorage.setItem('preferredLang', currentLang);
                 langToggle.innerText = getLangName(currentLang);
+
+                const logos = document.querySelectorAll('.logo');
+                logos.forEach(logo => {
+                    if (currentLang === 'hi') logo.innerText = 'ग्राम संजीवनी';
+                    else if (currentLang === 'gu') logo.innerText = 'ગ્રામ સંજીવની';
+                    else logo.innerText = 'Gram Sanjivani';
+                });
 
                 updateTranslateWidget(currentLang);
             });

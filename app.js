@@ -106,12 +106,25 @@ Keep the answers concise and easy to understand for rural users. Return ONLY the
     } catch (error) {
         console.error("AI Analysis Error:", error);
         resIssue.innerText = "Error analyzing symptoms";
-        resRemedy.innerText = error.message;
-        speak({
-            en: "Sorry, there was an error processing your request.",
-            hi: "क्षमा करें, आपके अनुरोध को प्रोसेस करने में कोई त्रुटि हुई।",
-            gu: "માફ કરશો, તમારી વિનંતી પર પ્રક્રિયા કરવામાં ભૂલ હતી."
-        });
+
+        let errorMessage = error.message;
+
+        // Handle Gemini Rate Limit (Quota Exceeded) gracefully
+        if (errorMessage.includes("Quota") || errorMessage.includes("429") || errorMessage.includes("rate limit")) {
+            resRemedy.innerText = "The AI service is receiving too many requests. Please wait 1 minute and try again.";
+            speak({
+                en: "The AI assistant is currently busy. Please wait a moment and try again.",
+                hi: "AI सहायक अभी व्यस्त है। कृपया कुछ देर प्रतीक्षा करें और फिर प्रयास करें।",
+                gu: "AI સહાયક અત્યારે વ્યસ્ત છે. કૃપા કરીને થોડીવાર રાહ જુઓ અને ફરી પ્રયાસ કરો."
+            });
+        } else {
+            resRemedy.innerText = errorMessage;
+            speak({
+                en: "Sorry, there was an error processing your request.",
+                hi: "क्षमा करें, आपके अनुरोध को प्रोसेस करने में कोई त्रुटि हुई।",
+                gu: "માફ કરશો, તમારી વિનંતી પર પ્રક્રિયા કરવામાં ભૂલ હતી."
+            });
+        }
     }
 }
 
@@ -183,20 +196,73 @@ window.speechSynthesis.onvoiceschanged = () => { window.speechSynthesis.getVoice
 
 
 
-
 // 2. Camera Logic
 const video = document.getElementById('camera-preview');
 const cameraSection = document.getElementById('camera-section');
+const btnSwitchCamera = document.getElementById('btn-switch-camera');
+const btnCapture = document.getElementById('btn-capture');
+const photoCanvas = document.getElementById('photo-canvas');
+let stream = null;
+let useFrontCamera = false;
 
-document.getElementById('btn-camera').onclick = async () => {
-    cameraSection.classList.remove('hidden');
+async function startCamera() {
+    if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+    }
+    const constraints = {
+        video: {
+            facingMode: useFrontCamera ? "user" : "environment"
+        }
+    };
     try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        stream = await navigator.mediaDevices.getUserMedia(constraints);
         video.srcObject = stream;
     } catch (err) {
         alert("Camera access denied: " + err);
     }
+}
+
+document.getElementById('btn-camera').onclick = async () => {
+    cameraSection.classList.remove('hidden');
+    await startCamera();
 };
+
+if (btnSwitchCamera) {
+    btnSwitchCamera.onclick = async () => {
+        useFrontCamera = !useFrontCamera;
+        await startCamera();
+    };
+}
+
+if (btnCapture) {
+    btnCapture.onclick = () => {
+        if (!stream) return;
+        photoCanvas.width = video.videoWidth || 640;
+        photoCanvas.height = video.videoHeight || 480;
+        photoCanvas.getContext('2d').drawImage(video, 0, 0, photoCanvas.width, photoCanvas.height);
+
+        photoCanvas.toBlob((blob) => {
+            if (!blob) return;
+            const file = new File([blob], "capture.jpg", { type: "image/jpeg" });
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(file);
+
+            const fileInput = document.getElementById('file-input');
+            if (fileInput) {
+                fileInput.files = dataTransfer.files;
+                const event = new Event('change');
+                fileInput.dispatchEvent(event);
+            }
+
+            // Hide camera
+            cameraSection.classList.add('hidden');
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+                stream = null;
+            }
+        }, 'image/jpeg');
+    };
+}
 
 // 3. Updated Upload & Analysis Logic
 const fileInput = document.getElementById('file-input');

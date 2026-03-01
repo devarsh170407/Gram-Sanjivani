@@ -400,7 +400,7 @@
 
     <header class="nav-header">
         <nav>
-            <a href="index.html" class="logo">Gram Sanjivani</a>
+            <a href="index.html" class="logo notranslate">Gram Sanjivani</a>
             <i class="fas fa-bars hamburger" id="hamburgerMenu"></i>
             <ul class="nav-links" id="navLinks">
                 <li><a href="index.html">Home</a></li>
@@ -586,6 +586,12 @@
         let currentLang = localStorage.getItem('preferredLang') || 'en';
         window.addEventListener('load', () => {
             setTimeout(() => {
+                const logos = document.querySelectorAll('.logo');
+                logos.forEach(logo => {
+                    if (currentLang === 'hi') logo.innerText = 'ग्राम संजीवनी';
+                    else if (currentLang === 'gu') logo.innerText = 'ગ્રામ સંજીવની';
+                    else logo.innerText = 'Gram Sanjivani';
+                });
                 if (currentLang !== 'en') {
                     const select = document.querySelector('.goog-te-combo');
                     if (select) {

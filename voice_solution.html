@@ -192,7 +192,7 @@
     </script>
 
     <nav class="navbar">
-        <a href="index.html" class="logo">Gram Sanjivani</a>
+        <a href="index.html" class="logo notranslate">Gram Sanjivani</a>
         <div class="nav-links">
             <button id="request-perms" class="primary-gold-btn">Enable Sensors</button>
         </div>
@@ -220,8 +220,12 @@
 
         <div id="camera-section" class="hidden">
             <video id="camera-preview" autoplay playsinline></video>
-            <button id="btn-capture" class="primary-gold-btn" style="margin-top: 10px; width: 100%;">Capture &
-                Analyze</button>
+            <div style="display: flex; gap: 10px; margin-top: 10px;">
+                <button id="btn-switch-camera" class="action-btn"
+                    style="padding: 10px; flex: 1; min-width: auto; font-size: 1rem;"><i class="fas fa-sync-alt"
+                        style="font-size: 1.5rem;"></i><span>Switch Camera</span></button>
+                <button id="btn-capture" class="primary-gold-btn" style="flex: 2;">Capture & Analyze</button>
+            </div>
             <canvas id="photo-canvas" class="hidden"></canvas>
         </div>
 
@@ -239,6 +243,12 @@
         let currentLang = localStorage.getItem('preferredLang') || 'en';
         window.addEventListener('load', () => {
             setTimeout(() => {
+                const logos = document.querySelectorAll('.logo');
+                logos.forEach(logo => {
+                    if (currentLang === 'hi') logo.innerText = 'ग्राम संजीवनी';
+                    else if (currentLang === 'gu') logo.innerText = 'ગ્રામ સંજીવની';
+                    else logo.innerText = 'Gram Sanjivani';
+                });
                 if (currentLang !== 'en') {
                     const select = document.querySelector('.goog-te-combo');
                     if (select) {
