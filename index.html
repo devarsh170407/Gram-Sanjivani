@@ -846,13 +846,16 @@
                 const btnContainer = document.createElement('div');
                 btnContainer.className = 'hero-btn-container';
 
+                let prefL = localStorage.getItem('preferredLang') || 'en';
+                let sahayakText = 'Sanjivani AI Sahayak';
+                if (prefL === 'hi') sahayakText = 'संजीवनी एआई सहायक';
+                else if (prefL === 'gu') sahayakText = 'સંજીવની એઆઈ સહાયક';
+
                 // Voice to Voice Button
                 const voiceBtn = document.createElement('a');
                 voiceBtn.href = 'voice_solution.html';
                 voiceBtn.className = 'btn hero-secondary-btn';
-                voiceBtn.innerHTML = '<i class="fas fa-microphone"></i> Voice Solution';
-                voiceBtn.setAttribute('data-en', 'Voice Solution');
-                voiceBtn.setAttribute('data-hi', 'आवाज समाधान');
+                voiceBtn.innerHTML = `<i class="fas fa-microphone"></i> <span class="sanjivani-ai-sahayak notranslate">${sahayakText}</span>`;
 
                 // Check-up Button
                 const checkBtn = document.createElement('a');

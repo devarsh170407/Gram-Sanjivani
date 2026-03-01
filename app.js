@@ -35,11 +35,7 @@ btnVoice.onclick = () => {
     };
 
     recognition.onend = () => {
-        let currentLang = localStorage.getItem('preferredLang') || 'en';
-        let btnText = 'Sanjivani AI Sahayak';
-        if (currentLang === 'hi') btnText = 'संजीवनी एआई सहायक';
-        else if (currentLang === 'gu') btnText = 'સંજીવની એઆઈ સહાયક';
-        btnVoice.querySelector('span').innerText = btnText;
+        btnVoice.querySelector('span').innerText = "Voice Chat";
         btnVoice.style.boxShadow = "none";
     };
 

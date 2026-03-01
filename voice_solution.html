@@ -212,7 +212,7 @@
             </button>
             <button id="btn-voice" class="action-btn" style="border: 2px solid var(--primary-color);">
                 <i class="fas fa-microphone"></i>
-                <span class="sanjivani-ai-sahayak notranslate">Sanjivani AI Sahayak</span>
+                <span>Voice Chat</span>
             </button>
         </div>
 
@@ -248,13 +248,6 @@
                     if (currentLang === 'hi') logo.innerText = 'ग्राम संजीवनी';
                     else if (currentLang === 'gu') logo.innerText = 'ગ્રામ સંજીવની';
                     else logo.innerText = 'Gram Sanjivani';
-                });
-
-                const sahayaks = document.querySelectorAll('.sanjivani-ai-sahayak');
-                sahayaks.forEach(el => {
-                    if (currentLang === 'hi') el.innerText = 'संजीवनी एआई सहायक';
-                    else if (currentLang === 'gu') el.innerText = 'સંજીવની એઆઈ સહાયક';
-                    else el.innerText = 'Sanjivani AI Sahayak';
                 });
 
                 if (currentLang !== 'en') {
