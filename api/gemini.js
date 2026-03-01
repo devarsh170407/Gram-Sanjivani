@@ -54,7 +54,11 @@ export default async function handler(req, res) {
                     lastError = new Error(errorMessage);
 
                     // If the Key throws a 429 (Too many requests/quota exceeded), loop to the next one
-                    if (response.status === 429 || errorMessage.toLowerCase().includes('quota') || errorMessage.toLowerCase().includes('rate')) {
+                    // But WAIT 1.5 Seconds so Google doesn't globally IP-ban the Vercel server for instantaneous bursting
+                    if (response.status === 429 || errorMessage.toLowerCase().includes('quota') || errorMessage.toLowerCase().includes('rate') || errorMessage.toLowerCase().includes('busy')) {
+                        const delay = (ms) => new Promise(res => setTimeout(res, ms));
+                        console.log("Sleeping for 1.5 seconds to bypass burst-protection...");
+                        await delay(1500);
                         continue;
                     }
 
