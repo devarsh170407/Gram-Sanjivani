@@ -663,8 +663,7 @@
                     <a href="voice_solution.html" class="feature-link">
                         <div class="feature-card">
                             <i class="fas fa-video feature-icon"></i>
-                            <h3 data-en="Voice to Voice Solution" data-hi="वॉयस टू वॉयस समाधान">Voice to Voice Solution
-                            </h3>
+                            <h3 class="sanjivani-ai-sahayak notranslate">Sanjivani AI Sahayak</h3>
                             <p data-en="By our AI-powered voice chat, will give solution for each pain"
                                 data-hi="हमारी एआई-संचालित वॉयस चैट द्वारा, हर दर्द का समाधान दिया जाएगा">By our
                                 AI-powered voice chat, will give solution for each pain</p>
@@ -777,6 +776,14 @@
                         else if (currentLang === 'gu') logo.innerText = 'ગ્રામ સંજીવની';
                         else logo.innerText = 'Gram Sanjivani';
                     });
+
+                    const sahayaks = document.querySelectorAll('.sanjivani-ai-sahayak');
+                    sahayaks.forEach(el => {
+                        if (currentLang === 'hi') el.innerText = 'संजीवनी एआई सहायक';
+                        else if (currentLang === 'gu') el.innerText = 'સંજીવની એઆઈ સહાયક';
+                        else el.innerText = 'Sanjivani AI Sahayak';
+                    });
+
                     if (currentLang !== 'en') {
                         updateTranslateWidget(currentLang);
                     }
@@ -799,6 +806,13 @@
                     if (currentLang === 'hi') logo.innerText = 'ग्राम संजीवनी';
                     else if (currentLang === 'gu') logo.innerText = 'ગ્રામ સંજીવની';
                     else logo.innerText = 'Gram Sanjivani';
+                });
+
+                const sahayaks = document.querySelectorAll('.sanjivani-ai-sahayak');
+                sahayaks.forEach(el => {
+                    if (currentLang === 'hi') el.innerText = 'संजीवनी एआई सहायक';
+                    else if (currentLang === 'gu') el.innerText = 'સંજીવની એઆઈ સહાયક';
+                    else el.innerText = 'Sanjivani AI Sahayak';
                 });
 
                 updateTranslateWidget(currentLang);
