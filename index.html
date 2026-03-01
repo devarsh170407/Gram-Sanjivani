@@ -34,6 +34,24 @@
             const observer = new MutationObserver(removeGoogleTranslateBanner);
             observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style'] });
             observer.observe(document.documentElement, { attributes: true, attributeFilter: ['style'] });
+
+            // Dropdown Click Handlers for Mobile Devices
+            const langDropdownBtn = document.querySelector('.lang-dropdown .lang-btn');
+            const langDropdownContent = document.querySelector('.lang-dropdown .dropdown-content');
+
+            if (langDropdownBtn && langDropdownContent) {
+                langDropdownBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    langDropdownContent.classList.toggle('show');
+                });
+
+                // Close dropdown when clicking outside
+                document.addEventListener('click', (e) => {
+                    if (!langDropdownBtn.contains(e.target) && !langDropdownContent.contains(e.target)) {
+                        langDropdownContent.classList.remove('show');
+                    }
+                });
+            }
         });
     </script>
 
@@ -69,7 +87,6 @@
         .container {
             width: 80%;
             margin: auto;
-            overflow: hidden;
         }
 
         /* Header Styles */
@@ -168,7 +185,6 @@
             min-width: 140px;
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
             z-index: 1000;
-            overflow: hidden;
             padding: 5px 0;
             margin-top: 10px;
         }
@@ -193,6 +209,11 @@
             background-color: rgba(212, 175, 55, 0.2);
             color: var(--primary-color);
             padding-right: 25px;
+        }
+
+        .dropdown-content.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
         }
 
         .lang-dropdown:hover .dropdown-content {
